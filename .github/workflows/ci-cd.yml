@@ -105,7 +105,7 @@ jobs:
       packages: read
     environment:
       name: production
-      url: https://kcca.ranpick.com
+      url: https://kcca.hohyeon.dev
     concurrency:
       group: kcca-production
       cancel-in-progress: false
