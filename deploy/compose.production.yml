@@ -1,0 +1,29 @@
+name: hohyeon-dev
+
+services:
+  web:
+    image: ${HOHYEON_IMAGE_REF:?HOHYEON_IMAGE_REF is required}
+    container_name: hohyeon-dev
+    restart: unless-stopped
+    init: true
+
+    env_file:
+      - .env.production
+
+    ports:
+      - "127.0.0.1:8081:8081"
+
+    environment:
+      HOSTNAME: "0.0.0.0"
+      NODE_ENV: production
+      PORT: "8081"
+
+    security_opt:
+      - no-new-privileges:true
+
+    cap_drop:
+      - ALL
+
+    pids_limit: 256
+    mem_limit: ${WEB_MEMORY_LIMIT:-1g}
+    cpus: ${WEB_CPU_LIMIT:-1.5}
