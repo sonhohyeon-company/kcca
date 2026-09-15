@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Icon } from "@/components/icon";
 import { ArtButton } from "@/components/artwork-viewer";
 import { BrandName } from "@/components/v2/header";
-import { artworks, artworkAlt } from "@/lib/artworks";
+import { artworks, artworkAlt, type Artwork } from "@/lib/artworks";
 
 const site = "https://kcca-society.kr";
 const phone = "031-878-0503";
@@ -23,6 +23,31 @@ function External({
       <Icon name="arrow-up-right" />
       <span className="sr-only"> (새 창)</span>
     </a>
+  );
+}
+
+// 정적 내보내기라 next/image가 크기별 파일을 만들지 않으므로 400px 변형을 직접 고른다.
+function ArtworkImage({
+  art,
+  sizes,
+  eager,
+}: {
+  art: Artwork;
+  sizes: string;
+  eager?: boolean;
+}) {
+  return (
+    <img
+      src={art.src}
+      srcSet={`${art.src.replace(".webp", "-400.webp")} 400w, ${art.src} ${art.width}w`}
+      sizes={sizes}
+      width={art.width}
+      height={art.height}
+      alt={artworkAlt(art)}
+      loading={eager ? "eager" : "lazy"}
+      fetchPriority={eager ? "high" : undefined}
+      decoding="async"
+    />
   );
 }
 
@@ -63,13 +88,10 @@ export function Hero() {
                 artIndex={index}
                 aria-label={`${art.name} 은상 수상작 크게 보기`}
               >
-                <Image
-                  src={art.src}
-                  alt={artworkAlt(art)}
-                  width={art.width}
-                  height={art.height}
-                  fetchPriority="high"
-                  loading="eager"
+                <ArtworkImage
+                  art={art}
+                  sizes="(max-width: 900px) 45vw, 19vw"
+                  eager
                 />
               </ArtButton>
               <figcaption>{art.name}, 은상</figcaption>
@@ -118,27 +140,22 @@ export function Competition() {
           </p>
         </div>
         <div className="notice">
-          <span className="stamp" aria-hidden="true">
-            2026
-          </span>
-          <div>
-            <h3>2026년 공모요강 준비 중</h3>
-            <p>
-              접수 기간, 출품 부문, 작품 규격은 공식 공지에 게시됩니다. 궁금한
-              점은 협회로 전화 주시면 안내해 드립니다.
-            </p>
-            <div className="actions">
-              <External
-                className="button button-pine"
-                href={`${site}/notice-contest`}
-              >
-                공식 공지 확인
-              </External>
-              <a className="button button-line" href={phoneHref}>
-                <Icon name="phone" />
-                {phone}
-              </a>
-            </div>
+          <h3>2026년 공모요강 준비 중</h3>
+          <p>
+            접수 기간, 출품 부문, 작품 규격은 공식 공지에 게시됩니다. 궁금한
+            점은 협회로 전화 주시면 안내해 드립니다.
+          </p>
+          <div className="actions">
+            <External
+              className="button button-pine"
+              href={`${site}/notice-contest`}
+            >
+              공식 공지 확인
+            </External>
+            <a className="button button-line" href={phoneHref}>
+              <Icon name="phone" />
+              {phone}
+            </a>
           </div>
         </div>
         <div className="competition-grid">
@@ -200,12 +217,9 @@ export function Winners() {
                 artIndex={index}
                 aria-label={`${art.name} 은상 수상작 크게 보기`}
               >
-                <Image
-                  src={art.src}
-                  alt={artworkAlt(art)}
-                  width={art.width}
-                  height={art.height}
-                  loading="lazy"
+                <ArtworkImage
+                  art={art}
+                  sizes="(max-width: 600px) 60vw, (max-width: 900px) 30vw, 20vw"
                 />
               </ArtButton>
               <h3>
@@ -228,25 +242,28 @@ export function Winners() {
 
 const grades = [
   {
+    step: "1",
     name: "청목정체 2급",
     sub: "기초 과정",
     body: "획과 자음 구조를 익히며 서체의 기본 원리를 배웁니다.",
   },
   {
+    step: "2",
     name: "청목정체 1급",
     sub: "문장 구성과 조형 표현",
     body: "문장을 구성하고 조형으로 표현하는 힘을 기르며 지도자의 기본 역량을 갖춥니다.",
   },
   {
+    step: "3",
     name: "전문 서체 4종 1급",
     sub: "봄체, 소망체, 아름체, 바름체",
     body: "둥근 마카의 봄체, 사각 마카의 소망체, 붓과 붓펜의 아름체, 정갈한 필서의 바름체를 차례로 배웁니다.",
   },
   {
+    step: "S",
     name: "청목 S급 지도사",
     sub: "최고 등급",
     body: "다섯 가지 지도사 과정을 모두 마친 분에게 주어집니다. 이론시험 25문항과 실기시험(문장 작품 2회분)을 거칩니다.",
-    top: true,
   },
 ];
 
@@ -271,44 +288,43 @@ export function Certificate() {
       tabIndex={-1}
       aria-labelledby="certificate-title"
     >
-      <div className="wrap cert-grid">
-        <div className="section-head cert-intro">
+      <div className="wrap">
+        <div className="section-head">
           <h2 id="certificate-title">자격증 안내</h2>
           <p>
-            청목캘리그라피 지도사 자격은 네 단계로 이어집니다. 기초부터 차례대로
+            청목캘리그라피 지도사 자격은 네 단계로 올라갑니다. 기초부터 차례대로
             배우고, 지도사가 되면 강의와 전시 활동을 시작할 수 있습니다.
           </p>
-          <div className="actions">
-            <External
-              className="button button-pine"
-              href={`${site}/certificate-guide`}
-            >
-              자격증 안내 전체 보기
-            </External>
-            <External
-              className="button button-line"
-              href={`${site}/certificate-register`}
-            >
-              시험 일정과 접수
-            </External>
-          </div>
         </div>
+        {/* 왼쪽에서 오른쪽으로 높아지는 계단: 순서가 곧 그림이다. */}
         <ol className="grades">
           {grades.map((grade) => (
-            <li
-              key={grade.name}
-              className={grade.top ? "top-grade" : undefined}
-            >
-              <div>
-                <h3>
-                  {grade.name}
-                  <small>{grade.sub}</small>
-                </h3>
-                <p>{grade.body}</p>
-              </div>
+            <li key={grade.name}>
+              <span className="grade-step" aria-hidden="true">
+                {grade.step}
+              </span>
+              <h3>
+                {grade.name}
+                <small>{grade.sub}</small>
+              </h3>
+              <p>{grade.body}</p>
             </li>
           ))}
         </ol>
+        <div className="actions cert-actions">
+          <External
+            className="button button-pine"
+            href={`${site}/certificate-guide`}
+          >
+            자격증 안내 전체 보기
+          </External>
+          <External
+            className="button button-line"
+            href={`${site}/certificate-register`}
+          >
+            시험 일정과 접수
+          </External>
+        </div>
       </div>
       <div className="wrap learn">
         <h3>교육은 이렇게 진행됩니다</h3>
@@ -510,7 +526,7 @@ export function Footer() {
 
 export function MobileBar() {
   return (
-    <div className="bar">
+    <nav className="bar" aria-label="빠른 연결">
       <a className="button button-line" href={phoneHref}>
         <Icon name="phone" />
         전화 문의
@@ -518,6 +534,6 @@ export function MobileBar() {
       <a className="button button-pine" href="#competition">
         공모전 안내
       </a>
-    </div>
+    </nav>
   );
 }

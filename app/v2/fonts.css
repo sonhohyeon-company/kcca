@@ -1,0 +1,29 @@
+/* scripts/subset-fonts.mjs가 만든 파일. 직접 고치지 않는다. */
+@font-face {
+  font-family: "Hahmlet";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/assets/v2-hahmlet-500.woff2) format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Sans KR";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/assets/v2-plex-400.woff2) format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Sans KR";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/assets/v2-plex-500.woff2) format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Sans KR";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/assets/v2-plex-700.woff2) format("woff2");
+}

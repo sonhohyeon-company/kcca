@@ -28,7 +28,7 @@ npm run build
 - 시안 1: `/` — `app/(v1)/` 아래 기존 디자인(`app/globals.css`)
 - 시안 2: `/v2/` — `app/v2/` 아래 새 디자인(`app/v2/v2.css`, `components/v2/`)
 
-두 시안은 루트 레이아웃이 달라 서로 CSS가 섞이지 않습니다. 화면 왼쪽 아래의 `시안 1 | 시안 2` 버튼(`components/design-switch.tsx`)으로 오갑니다. 시안 2의 글꼴(Hahmlet, IBM Plex Sans KR)은 `next/font/google`이 빌드 때 내려받아 같은 도메인에서 제공합니다. 전역 404는 `app/global-not-found.tsx`입니다.
+두 시안은 루트 레이아웃이 달라 서로 CSS가 섞이지 않습니다. 화면 왼쪽 아래의 `시안 1 | 시안 2` 버튼(`components/design-switch.tsx`)으로 오갑니다. 시안 2의 글꼴(Hahmlet, IBM Plex Sans KR)은 페이지 문구에 쓰인 글자만 담은 파일(`public/assets/v2-*.woff2`)로 제공합니다. 시안 2의 문구를 바꾸면 `node scripts/subset-fonts.mjs`로 다시 만듭니다. 전역 404는 `app/global-not-found.tsx`입니다.
 
 ## 수정할 위치
 

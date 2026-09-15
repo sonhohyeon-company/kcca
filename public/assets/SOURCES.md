@@ -9,3 +9,9 @@ All association material was sourced from the user's public site https://kcca-so
 - activity-pocheon: https://cdn.imweb.me/thumbnail/20260911/8068f336f47ad.png ; https://kcca-society.kr/association/?idx=174003766&bmode=view
 - activity-writing: https://cdn.imweb.me/thumbnail/20260827/d35f0d784b736.jpg ; https://kcca-society.kr/association/?idx=173461152&bmode=view
 - Noto Serif KR / Noto Sans KR: Google Fonts API, subset to the page's text; SIL Open Font License in this directory and final HTML.
+
+## 시안 2 글꼴
+
+- v2-hahmlet-500.woff2, v2-plex-400/500/700.woff2: Google Fonts API에서 시안 2 문구에 쓰인 글자만 담아 내려받음(`scripts/subset-fonts.mjs`). Hahmlet과 IBM Plex Sans KR은 SIL Open Font License 1.1(Hahmlet-OFL.txt, IBM-Plex-Sans-KR-OFL.txt).
+- award-*-400.webp: 같은 작품 이미지를 400px 폭으로 줄인 모바일용 변형.
+- og-v2.png(/public): 시안 2의 카카오톡·SNS 미리보기 카드.
