@@ -1,22 +1,14 @@
-name: hohyeon-dev
+name: kcca
 
 services:
   web:
-    image: ${HOHYEON_IMAGE_REF:?HOHYEON_IMAGE_REF is required}
-    container_name: hohyeon-dev
+    image: ${KCCA_IMAGE_REF:?KCCA_IMAGE_REF is required}
+    container_name: kcca
     restart: unless-stopped
     init: true
 
-    env_file:
-      - .env.production
-
     ports:
-      - "127.0.0.1:8081:8081"
-
-    environment:
-      HOSTNAME: "0.0.0.0"
-      NODE_ENV: production
-      PORT: "8081"
+      - "127.0.0.1:8082:8080"
 
     security_opt:
       - no-new-privileges:true

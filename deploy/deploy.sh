@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-: "${HOHYEON_IMAGE_REF:?HOHYEON_IMAGE_REF is required}"
+: "${KCCA_IMAGE_REF:?KCCA_IMAGE_REF is required}"
 
 readonly compose_file="compose.production.yml"
-readonly container_name="hohyeon-dev"
+readonly container_name="kcca"
 readonly startup_timeout_seconds=120
 
-compose=(docker compose --project-name hohyeon-dev --file "$compose_file")
+compose=(docker compose --project-name kcca --file "$compose_file")
 
 previous_image="$(docker inspect --format '{{.Config.Image}}' "$container_name" 2>/dev/null || true)"
 previous_project="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project"}}' "$container_name" 2>/dev/null || true)"
@@ -44,7 +44,7 @@ rollback() {
     return 1
   fi
 
-  HOHYEON_IMAGE_REF="$previous_image" \
+  KCCA_IMAGE_REF="$previous_image" \
     "${compose[@]}" up --detach --no-deps --force-recreate web
 
   if ! wait_until_running; then
@@ -61,16 +61,11 @@ test -f "$compose_file" || {
   exit 1
 }
 
-test -f ".env.production" || {
-  echo ".env.production 파일이 없습니다." >&2
-  exit 1
-}
-
-echo "배포 이미지를 받습니다: $HOHYEON_IMAGE_REF"
+echo "배포 이미지를 받습니다: $KCCA_IMAGE_REF"
 "${compose[@]}" pull web
 
 # 기존 Compose 프로젝트의 컨테이너를 새 배포 구성으로 전환
-if [[ -n "$previous_image" && "$previous_project" != "hohyeon" ]]; then
+if [[ -n "$previous_image" && "$previous_project" != "kcca" ]]; then
   echo "기존 Compose 프로젝트의 웹 컨테이너를 새 배포 구성으로 전환합니다."
   docker rm --force "$container_name"
 fi
@@ -85,6 +80,6 @@ if ! wait_until_running; then
   exit 1
 fi
 
-echo "배포가 완료됐습니다: $HOHYEON_IMAGE_REF"
+echo "배포가 완료됐습니다: $KCCA_IMAGE_REF"
 
 docker image prune --force >/dev/null
