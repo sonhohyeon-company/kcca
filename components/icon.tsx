@@ -5,6 +5,8 @@ const paths = {
   close: "m6 6 12 12M6 18 18 6",
   menu: "M4 6h16M4 12h16M4 18h16",
   expand: "M4 9V4h5m6 0h5v5m0 6v5h-5m-6 0H4v-5",
+  phone:
+    "M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2",
 } as const;
 
 // Tabler Icons, MIT License: https://github.com/tabler/tabler-icons

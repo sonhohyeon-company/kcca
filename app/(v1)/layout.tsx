@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import "./globals.css";
+import { DesignSwitch } from "@/components/design-switch";
+import "../globals.css";
+import "@/components/design-switch.css";
 
 export const metadata: Metadata = {
   title: "한국청목캘리그라피예술협회 | 한 획에서 시작되는 예술",
@@ -36,7 +38,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        {children}
+        <DesignSwitch current="v1" />
+      </body>
     </html>
   );
 }

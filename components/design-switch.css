@@ -1,0 +1,48 @@
+/* 시안 전환 버튼: 두 시안 모두에 떠 있는 유일한 공용 UI */
+.design-switch {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 30;
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 999px;
+  background: #14231f;
+  color: #fff;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  font:
+    500 15px/1 system-ui,
+    "Apple SD Gothic Neo",
+    "Malgun Gothic",
+    sans-serif;
+}
+.design-switch a,
+.design-switch span {
+  padding: 11px 15px;
+  border-radius: 999px;
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.design-switch span {
+  background: #fff;
+  color: #14231f;
+}
+.design-switch a:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+.design-switch a:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+@media (max-width: 900px) {
+  .design-switch {
+    left: 12px;
+    bottom: calc(env(safe-area-inset-bottom) + 100px);
+  }
+}
+@media print {
+  .design-switch {
+    display: none;
+  }
+}
