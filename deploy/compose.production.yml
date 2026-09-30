@@ -10,6 +10,14 @@ services:
     ports:
       - "127.0.0.1:8082:8080"
 
+    # 서버에만 있는 .env (git에 올리지 않음): ADMIN_PASSWORD, SITE_URL, ALLOW_INDEXING
+    env_file: .env
+    environment:
+      DATA_DIR: /data # .env 값보다 우선합니다. DB와 업로드는 반드시 볼륨에 저장
+    volumes:
+      - kcca-data:/data # kcca.db, uploads/, private/ — 재배포해도 유지
+    # 헬스체크는 Dockerfile의 HEALTHCHECK (첫 화면 응답 = 서버, 설정, DB 확인, /data 쓰기 권한)
+
     security_opt:
       - no-new-privileges:true
 
@@ -19,3 +27,6 @@ services:
     pids_limit: 256
     mem_limit: ${WEB_MEMORY_LIMIT:-1g}
     cpus: ${WEB_CPU_LIMIT:-1.5}
+
+volumes:
+  kcca-data:

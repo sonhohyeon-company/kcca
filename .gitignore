@@ -1,7 +1,6 @@
 node_modules/
 .next/
-out/
-dist/
+/data/
 .DS_Store
 *.tsbuildinfo
 .env*

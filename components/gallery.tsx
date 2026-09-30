@@ -1,15 +1,17 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
-import { artworks, artworkAlt, artworkURL } from "@/lib/artworks";
-import { ArtButton } from "./artwork-viewer";
+import { artworkLabel } from "@/lib/boards";
+import { ArtButton, type Artwork } from "./artwork-viewer";
 import { Icon } from "./icon";
 
-export function Gallery() {
+export function Gallery({ items }: { items: Artwork[] }) {
   const [selected, setSelected] = useState(0);
   const [announcement, setAnnouncement] = useState("");
-  const art = artworks[selected];
+  const art = items[selected];
+  if (!art) return null;
 
   return (
     <section
@@ -27,42 +29,33 @@ export function Gallery() {
             작품을 골라 천천히 감상해 보세요.
           </p>
         </div>
-        <a
-          className="text-link"
-          href="https://kcca-society.kr/notice-gallery-2025"
-          target="_blank"
-          rel="noopener"
-        >
-          2025 수상작 전체 보기
-          <Icon name="arrow-up-right" className="arrow" />
-          <span className="sr-only"> (새 창)</span>
-        </a>
+        <Link className="text-link" href="/notice-gallery">
+          수상작 전체 보기
+          <Icon name="arrow-right" className="arrow" />
+        </Link>
       </div>
       <div className="gallery-room">
         <div className="gallery-stage">
           <ArtButton
             id="gallery-art-open"
             artIndex={selected}
-            aria-label={`${art.name} 은상 수상작 확대 감상`}
+            aria-label={`${artworkLabel(art)} 수상작 확대 감상`}
           >
             <Image
               id="gallery-image"
               src={art.src}
-              alt={artworkAlt(art)}
-              width={art.width}
-              height={art.height}
+              alt={art.alt}
+              fill
+              sizes="(max-width: 600px) 90vw, (max-width: 850px) 45vw, 600px"
             />
           </ArtButton>
         </div>
         <div className="gallery-side">
-          <p className="gallery-year">2025 대한민국 청목캘리그라피 공모전</p>
+          {art.category && <p className="gallery-year">{art.category}</p>}
           <div className="gallery-artist">
             <h3 id="gallery-artist">{art.name}</h3>
-            <span className="award-label">은상</span>
+            {art.award && <span className="award-label">{art.award}</span>}
           </div>
-          <p className="gallery-description" id="gallery-description">
-            {art.description}
-          </p>
           <ArtButton
             className="btn secondary"
             artIndex={selected}
@@ -71,46 +64,40 @@ export function Gallery() {
             작품 확대 감상
             <Icon name="expand" />
           </ArtButton>
-          <a
-            className="text-link"
-            id="gallery-source"
-            href={artworkURL(art)}
-            target="_blank"
-            rel="noopener"
-          >
-            공식 작품 페이지
-            <Icon name="arrow-up-right" />
-            <span className="sr-only"> (새 창)</span>
-          </a>
-          <div
-            className="gallery-picker"
-            role="group"
-            aria-label="감상할 작가 선택"
-          >
-            {artworks.map((item, index) => (
-              <button
-                key={item.id}
-                type="button"
-                className="artist-choice"
-                aria-pressed={selected === index}
-                onClick={() => {
-                  setSelected(index);
-                  setAnnouncement(`${item.name}의 은상 수상작을 선택했습니다.`);
-                }}
-              >
-                <Image
-                  src={item.src}
-                  alt=""
-                  width={item.width}
-                  height={item.height}
-                />
-                <span>{item.name}</span>
-                <span className="choice-state">
-                  {selected === index ? "감상 중" : "작품 선택"}
-                </span>
-              </button>
-            ))}
-          </div>
+          <Link className="text-link" id="gallery-source" href={art.href}>
+            작품 자세히 보기
+            <Icon name="arrow-right" className="arrow" />
+          </Link>
+          {items.length > 1 && (
+            <div
+              className="gallery-picker"
+              role="group"
+              aria-label="감상할 작가 선택"
+            >
+              {items.map((item, index) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className="artist-choice"
+                  aria-pressed={selected === index}
+                  onClick={() => {
+                    setSelected(index);
+                    setAnnouncement(
+                      `${artworkLabel(item)} 수상작을 선택했습니다.`,
+                    );
+                  }}
+                >
+                  <span className="choice-thumb">
+                    <Image src={item.src} alt="" fill sizes="120px" />
+                  </span>
+                  <span>{item.name}</span>
+                  <span className="choice-state">
+                    {selected === index ? "감상 중" : "작품 선택"}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <p className="gallery-note">

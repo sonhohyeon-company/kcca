@@ -29,6 +29,7 @@ export function ReadingTools() {
     }
   }
 
+  // The label names the action, so no aria-pressed (it would read "기본 크기, 눌림").
   return (
     <div className="reading-tools wrap">
       <p>편하게 읽으세요</p>
@@ -36,7 +37,6 @@ export function ReadingTools() {
         type="button"
         className="text-size"
         id="text-size"
-        aria-pressed={large}
         onClick={toggleSize}
       >
         {large ? "글자 기본 크기" : "글자 크게"}

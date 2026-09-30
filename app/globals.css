@@ -1,40 +1,3 @@
-@font-face {
-  font-family: "KCCA Serif";
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url(/assets/serif-0.ttf) format("truetype");
-}
-
-@font-face {
-  font-family: "KCCA Sans";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(/assets/sans-0.ttf) format("truetype");
-}
-@font-face {
-  font-family: "KCCA Sans";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url(/assets/sans-1.ttf) format("truetype");
-}
-@font-face {
-  font-family: "KCCA Sans";
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url(/assets/sans-2.ttf) format("truetype");
-}
-@font-face {
-  font-family: "KCCA Sans";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(/assets/sans-3.ttf) format("truetype");
-}
-
 /* KCCA: contemporary exhibition guide, accessible typography at the core. */
 
 :root {
@@ -47,14 +10,13 @@
   --accent-hover: #87272b;
   --line: #d5dbcf;
   --wash: #ecefe6;
-  --serif: "KCCA Serif", "Noto Serif KR", "Batang", serif;
-  --sans: "KCCA Sans", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --serif: var(--font-serif), "Noto Serif KR", "Batang", serif;
+  --sans: var(--font-sans), "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --max: 1360px;
   --gutter: clamp(24px, 4.5vw, 72px);
   --header: 86px;
   font-size: 100%;
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--header) + 24px);
 }
 html.large-text {
   font-size: 125%;
@@ -118,6 +80,12 @@ button {
   cursor: pointer;
   border: 0;
 }
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
 button,
 a {
   -webkit-tap-highlight-color: transparent;
@@ -137,7 +105,8 @@ ol {
   margin: 0;
   list-style: none;
 }
-svg {
+/* Icons only (<Icon> is always aria-hidden); SVG in content keeps its own styling. */
+svg[aria-hidden="true"] {
   width: 22px;
   height: 22px;
   fill: none;
@@ -286,15 +255,64 @@ svg {
   gap: clamp(18px, 2.2vw, 34px);
   font-size: 1rem;
 }
-.desktop-nav a {
+/* Click-to-open dropdowns (native <details name="gnb">), never hover-only. */
+.nav-group {
+  position: relative;
+}
+.nav-group > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  list-style: none;
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 1px solid transparent;
+}
+.nav-group > summary::-webkit-details-marker {
+  display: none;
+}
+.nav-group > summary::after {
+  content: "";
+  width: 0.42em;
+  height: 0.42em;
+  border: solid currentColor;
+  border-width: 0 1.5px 1.5px 0;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.2s;
+}
+.nav-group[open] > summary::after {
+  transform: translateY(2px) rotate(-135deg);
+}
+.nav-group > summary:hover,
+.nav-group[open] > summary,
+.nav-group > summary[aria-current] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.submenu {
+  position: absolute;
+  /* Drops the panel onto the header's bottom rule. */
+  top: calc(100% + (var(--header) - 48px) / 2);
+  left: -22px;
+  z-index: 11;
+  min-width: max(100% + 44px, 12.5rem);
+  padding: 8px 0;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--accent);
+  box-shadow: 7px 17px 27px #2730240b;
+}
+.submenu a {
   display: flex;
   align-items: center;
   min-height: 48px;
-  border-bottom: 1px solid transparent;
+  padding: 4px 22px;
+  white-space: nowrap;
 }
-.desktop-nav a:hover,
-.desktop-nav a[aria-current] {
-  border-color: var(--accent);
+.submenu a:hover,
+.submenu a[aria-current] {
+  background: var(--wash);
   color: var(--accent);
 }
 .header-action {
@@ -321,26 +339,23 @@ svg {
   padding-top: 8px;
 }
 .reading-tools p {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   color: var(--muted);
 }
 .text-size {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  min-height: 44px;
+  min-height: 48px;
   padding: 7px 12px;
   background: transparent;
   border: 1px solid var(--line);
-  font-size: 0.9375rem;
+  font-size: 1rem;
 }
 .text-size:hover,
-.text-size[aria-pressed="true"] {
+.large-text .text-size {
   background: var(--wash);
   border-color: var(--ink);
-}
-.text-size svg {
-  width: 19px;
 }
 .hero {
   display: grid;
@@ -421,9 +436,12 @@ svg {
 .art-sheet:hover {
   transform: translateY(-6px);
 }
-.art-sheet img {
-  width: 100%;
+.art-frame {
+  position: relative;
+  display: block;
   aspect-ratio: 684/1333;
+}
+.art-frame img {
   object-fit: contain;
 }
 .art-sheet.small {
@@ -435,7 +453,7 @@ svg {
   justify-content: space-between;
   gap: 12px;
   color: var(--muted);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   margin-top: 22px;
   line-height: 1.8;
 }
@@ -483,7 +501,25 @@ svg {
   border: 1px solid #c4cdbd;
   background: var(--paper);
   color: var(--accent);
+}
+.participate .status {
   margin-top: 24px;
+}
+.contest-title {
+  font-size: 1.375rem;
+  line-height: 1.6;
+  margin-top: 16px;
+}
+.contest-period {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 12px;
+  font-size: 1.0625rem;
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.contest-period span {
+  color: var(--muted);
 }
 .status-note {
   color: var(--muted);
@@ -491,6 +527,7 @@ svg {
   margin-top: 14px;
   max-width: 430px;
   line-height: 1.85;
+  white-space: pre-line;
 }
 .participate .btn {
   margin-top: 25px;
@@ -567,19 +604,14 @@ svg {
   position: relative;
 }
 .gallery-stage button {
+  position: relative;
   height: 525px;
   width: 100%;
   padding: 0;
   background: none;
-  display: grid;
-  place-items: center;
 }
 .gallery-stage img {
-  height: 100%;
-  max-height: 525px;
-  width: 100%;
   object-fit: contain;
-  transition: opacity 0.2s;
 }
 .gallery-side {
   padding: 45px 0 36px 52px;
@@ -604,13 +636,6 @@ svg {
   font-size: 1rem;
   color: var(--accent);
 }
-.gallery-description {
-  font-size: 1.125rem;
-  line-height: 1.9;
-  color: var(--muted);
-  margin-top: 22px;
-  max-width: 390px;
-}
 .gallery-side > .btn {
   margin-top: 26px;
   min-height: 54px;
@@ -621,8 +646,8 @@ svg {
   margin-top: 9px;
 }
 .gallery-picker {
-  display: flex;
-  align-items: stretch;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   width: 100%;
   margin-top: auto;
@@ -633,7 +658,6 @@ svg {
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  flex: 1;
   min-width: 0;
   background: none;
   border: 1px solid var(--line);
@@ -649,16 +673,19 @@ svg {
   border-color: var(--accent);
   color: var(--accent);
 }
-.artist-choice img {
-  height: 76px;
+.choice-thumb {
+  position: relative;
   width: 100%;
+  height: 76px;
+}
+.choice-thumb img {
   object-fit: contain;
 }
 .artist-choice span {
   font-weight: 600;
 }
 .choice-state {
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   font-weight: 400 !important;
   min-height: 20px;
 }
@@ -678,7 +705,6 @@ svg {
 }
 .news-layout {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
   gap: 8%;
 }
 .news-title {
@@ -707,12 +733,12 @@ svg {
   color: var(--accent);
 }
 .news-list .meta {
-  display: flex;
-  gap: 16px;
-  font-size: 0.9375rem;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
   margin-bottom: 8px;
+}
+.empty-note {
+  padding-block: 23px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
 }
 .news-list h3 {
   font-size: 1.125rem;
@@ -726,6 +752,7 @@ svg {
   margin-top: 25px;
 }
 .activity-image {
+  position: relative;
   overflow: hidden;
   aspect-ratio: 0.96;
   background: var(--wash);
@@ -844,7 +871,7 @@ svg {
   text-decoration: underline;
 }
 .copyright {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   margin-top: 19px;
   color: var(--muted);
 }
@@ -888,20 +915,37 @@ dialog::backdrop {
   width: min(470px, calc(100% - 28px));
   margin: 14px 14px auto auto;
 }
+/* The grouped menu scrolls inside the dialog; its title bar stays put. */
+.menu-dialog .dialog-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--paper);
+}
 .menu-links {
-  padding: 10px 24px 28px;
+  padding: 0 24px 28px;
+}
+.menu-group h3 {
+  padding-top: 18px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--muted);
 }
 .menu-links a {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 15px;
-  min-height: 61px;
+  min-height: 52px;
   border-bottom: 1px solid var(--line);
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
 }
 .menu-links a:hover {
   color: var(--accent);
+}
+.menu-links a[aria-current] {
+  color: var(--accent);
+  font-weight: 600;
 }
 .menu-links .btn {
   justify-content: center;
@@ -988,7 +1032,7 @@ dialog::backdrop {
   background: var(--wash);
   border-color: var(--ink);
 }
-.zoom-button[aria-pressed="true"] {
+.zoom-button.is-on {
   background: var(--accent);
   color: white;
   border-color: var(--accent);
@@ -1005,11 +1049,314 @@ dialog::backdrop {
   gap: 12px;
 }
 .viewer-hint {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   color: var(--muted);
 }
 .art-image-wrap .image-error {
   background: var(--paper);
+}
+.hero.no-art {
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 0;
+  padding-block: 40px 70px;
+}
+.policies .privacy {
+  font-weight: 700;
+  color: var(--ink);
+}
+/* Home notice popup (settings → 팝업). */
+.popup-dialog {
+  width: min(520px, calc(100% - 28px));
+}
+.popup-image a {
+  display: block;
+}
+.popup-image img {
+  width: 100%;
+  max-height: calc(100dvh - 120px);
+  object-fit: contain;
+  background: var(--wash);
+}
+.popup-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 16px;
+  border-top: 1px solid var(--line);
+}
+.popup-actions > button:first-child {
+  min-height: 48px;
+  padding: 8px 0;
+  background: none;
+  font-size: 1rem;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 100px;
+}
+.nowrap {
+  white-space: nowrap;
+}
+.meta .pin {
+  color: var(--accent);
+}
+.closing .mission {
+  max-width: 34rem;
+  margin: 14px auto 0;
+  font: 400 1.0625rem/1.8 var(--sans);
+  color: var(--muted);
+}
+
+/* ---- Shared by inner pages, boards and forms ---- */
+.wrap.narrow {
+  /* Reading width for posts and static pages; grows with large text. */
+  max-width: calc(48rem + 2 * var(--gutter));
+}
+.eyebrow {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 0.9375rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.meta time {
+  white-space: nowrap;
+}
+.page-hero {
+  padding-block: 44px 30px;
+}
+.page-title {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3.4vw, 2.9rem);
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  margin-top: 6px;
+}
+.page-hero > p:last-child:not(.eyebrow, .page-title) {
+  color: var(--muted);
+  max-width: 40rem;
+  margin-top: 12px;
+}
+/* Section sub-navigation; rows wrap instead of scrolling sideways. */
+.subnav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 30px;
+  border-bottom: 1px solid var(--line);
+}
+.subnav a {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-size: 1rem;
+  white-space: nowrap;
+}
+.subnav a:hover {
+  color: var(--ink);
+}
+.subnav a[aria-current] {
+  color: var(--accent);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+/* Chips: level-3 menus and category filters. */
+.subnav.chips ul {
+  border: 0;
+  gap: 8px;
+  margin-top: 24px;
+}
+.subnav.chips a {
+  min-height: 44px;
+  padding: 6px 14px;
+  margin: 0;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  white-space: normal; /* long contest names wrap at 320px with large text */
+}
+.subnav.chips a:hover {
+  background: var(--wash);
+}
+.subnav.chips a[aria-current] {
+  background: var(--wash);
+  border-color: var(--ink);
+  color: var(--ink);
+}
+/* Post and page body (lib/markup renderBody); undoes the global resets. */
+.prose {
+  padding-block: 40px;
+  line-height: 1.9;
+}
+.prose > * + * {
+  margin-top: 1em;
+}
+.prose h2 {
+  font-size: 1.6rem;
+  margin-top: 2em;
+}
+.prose h3 {
+  margin-top: 1.6em;
+}
+.prose a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.prose ul {
+  list-style: disc;
+  padding-left: 1.4em;
+}
+.prose li + li {
+  margin-top: 0.35em;
+}
+.prose img {
+  margin-inline: auto;
+}
+/* Pagination and search (server-rendered ?page= and ?q=). */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 48px;
+}
+.pagination a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  font-variant-numeric: tabular-nums;
+}
+.pagination a:hover {
+  background: var(--wash);
+  border-color: var(--line);
+}
+.pagination a[aria-current] {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.pagination .step {
+  border-color: var(--line);
+}
+.search {
+  display: flex;
+  gap: 8px;
+  width: min(100%, 26rem);
+}
+.search input,
+.field :is(input:not([type="checkbox"], [type="radio"]), select, textarea) {
+  width: 100%;
+  min-width: 0;
+  min-height: 52px;
+  padding: 10px 14px;
+  border: 1px solid var(--muted); /* 3:1 against white so the field edge shows */
+  border-radius: 0;
+  background: var(--white);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+.search input:focus-visible,
+.field :is(input, select, textarea):focus-visible {
+  outline-offset: 0;
+  border-color: var(--ink);
+}
+.search .btn {
+  min-height: 52px;
+  padding-inline: 18px;
+  flex: none;
+}
+/* Forms (application form and admin). */
+fieldset.field {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.field {
+  display: grid;
+  gap: 8px;
+}
+.field > label,
+.field > legend {
+  font-size: 1rem;
+  font-weight: 600;
+}
+.field .hint {
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+.field textarea {
+  min-height: 22rem;
+  resize: vertical;
+}
+.field [aria-invalid="true"] {
+  border-color: var(--accent);
+}
+.field .error {
+  font-size: 0.9375rem;
+  color: var(--accent);
+}
+.check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+}
+.check input {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  accent-color: var(--accent);
+}
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.btn.small {
+  min-height: 44px;
+  padding: 8px 14px;
+  font-size: 0.9375rem;
+  gap: 8px;
+}
+.btn.danger {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.btn.danger:hover {
+  background: var(--accent);
+  color: #fff;
+}
+/* Result message after a form submit; use role="status" (or role="alert" for errors). */
+.flash {
+  margin-bottom: 24px;
+  padding: 14px 18px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
 }
 @media (prefers-reduced-motion: no-preference) {
   .hero-copy {
@@ -1085,9 +1432,11 @@ dialog::backdrop {
   }
 }
 @media (max-width: 1050px) {
-  .desktop-nav,
-  .header-action {
+  .desktop-nav {
     display: none;
+  }
+  .header-action {
+    margin-left: auto; /* next to the menu button */
   }
   .menu-open {
     display: flex;
@@ -1099,10 +1448,8 @@ dialog::backdrop {
     min-height: 520px;
     padding: 26px;
   }
-  .gallery-stage button,
-  .gallery-stage img {
+  .gallery-stage button {
     height: 440px;
-    max-height: 440px;
   }
   .gallery-side {
     padding-top: 28px;
@@ -1115,14 +1462,10 @@ dialog::backdrop {
   .gallery-artist h3 {
     font-size: 2.2rem;
   }
-  .gallery-description {
-    font-size: 1.0625rem;
-    margin-top: 17px;
-  }
   .gallery-picker {
     padding-top: 25px;
   }
-  .artist-choice img {
+  .choice-thumb {
     height: 65px;
   }
   .participate-grid {
@@ -1184,12 +1527,8 @@ dialog::backdrop {
     padding: 9px;
   }
   .art-pair-caption {
-    font-size: 0.8125rem;
     flex-wrap: wrap;
     margin-top: 12px;
-  }
-  .caption-control {
-    font-size: 0.875rem;
   }
   .participate-grid {
     grid-template-columns: 1fr;
@@ -1241,31 +1580,20 @@ dialog::backdrop {
     min-height: 0;
     padding: 20px;
   }
-  .gallery-stage button,
-  .gallery-stage img {
+  .gallery-stage button {
     height: 440px;
-    max-height: 440px;
   }
   .gallery-side {
     padding: 27px 0 28px 25px;
   }
-  .gallery-description {
-    font-size: 1rem;
-  }
   .gallery-picker {
     gap: 7px;
-    flex-wrap: wrap;
   }
   .artist-choice {
     font-size: 0.9375rem;
-    min-width: 75px;
   }
-  .artist-choice img {
+  .choice-thumb {
     display: none;
-  }
-  .choice-state {
-    font-size: 0.75rem;
-    min-height: 18px;
   }
   .gallery-side > .btn {
     font-size: 0.9375rem;
@@ -1273,7 +1601,6 @@ dialog::backdrop {
     gap: 12px;
   }
   .news-layout {
-    grid-template-columns: 1fr;
     gap: 60px;
   }
   .activity-image {
@@ -1320,6 +1647,9 @@ dialog::backdrop {
   .brand-name {
     font-size: 0.8125rem;
   }
+  .header-action {
+    display: none; /* the mobile bar carries it */
+  }
   .menu-open {
     font-size: 1rem;
   }
@@ -1328,11 +1658,7 @@ dialog::backdrop {
     padding-top: 9px;
     gap: 12px;
   }
-  .reading-tools p {
-    font-size: 0.8125rem;
-  }
   .text-size {
-    font-size: 0.875rem;
     padding: 6px 10px;
     gap: 7px;
   }
@@ -1384,6 +1710,10 @@ dialog::backdrop {
     gap: 4px 10px;
     flex-wrap: wrap;
   }
+  /* Its own row, so the fallback and web fonts wrap the same way (no jump on swap). */
+  .hero-status span {
+    flex-basis: 100%;
+  }
   .hero-art {
     padding-inline: 8px;
   }
@@ -1401,7 +1731,6 @@ dialog::backdrop {
   }
   .art-pair-caption {
     margin-top: 16px;
-    font-size: 0.8125rem;
     flex-wrap: nowrap;
     gap: 8px;
   }
@@ -1409,7 +1738,6 @@ dialog::backdrop {
     max-width: 225px;
   }
   .caption-control {
-    font-size: 0.875rem;
     gap: 6px;
   }
   .participate {
@@ -1425,8 +1753,7 @@ dialog::backdrop {
     font-size: 1.0625rem;
     margin-top: 13px;
   }
-  .status {
-    font-size: 0.9375rem;
+  .participate .status {
     margin-top: 22px;
   }
   .status-note {
@@ -1483,10 +1810,8 @@ dialog::backdrop {
     padding: 25px;
     min-height: 0;
   }
-  .gallery-stage button,
-  .gallery-stage img {
+  .gallery-stage button {
     height: 420px;
-    max-height: 420px;
   }
   .gallery-side {
     padding: 25px 0 26px;
@@ -1497,11 +1822,6 @@ dialog::backdrop {
   }
   .gallery-artist h3 {
     font-size: 2.35rem;
-  }
-  .gallery-description {
-    font-size: 1.0625rem;
-    margin-top: 14px;
-    max-width: none;
   }
   .gallery-side > .btn {
     font-size: 1rem;
@@ -1522,7 +1842,6 @@ dialog::backdrop {
     border-bottom: 1px solid var(--line);
     width: 100%;
     gap: 9px;
-    flex-wrap: nowrap;
   }
   .artist-choice {
     min-width: 0;
@@ -1530,10 +1849,6 @@ dialog::backdrop {
     font-size: 1rem;
     gap: 5px;
     min-height: 70px;
-  }
-  .choice-state {
-    font-size: 0.8125rem;
-    min-height: 20px;
   }
   .gallery-note {
     font-size: 0.9375rem;
@@ -1614,9 +1929,6 @@ dialog::backdrop {
     font-size: 0.9375rem;
     gap: 14px;
   }
-  .copyright {
-    font-size: 0.8125rem;
-  }
   .mobile-bar {
     display: flex;
     align-items: center;
@@ -1667,9 +1979,6 @@ dialog::backdrop {
   .menu-links {
     padding-inline: 20px;
   }
-  .menu-links a {
-    font-size: 1.125rem;
-  }
   .menu-links .btn {
     font-size: 1rem;
     padding-inline: 10px;
@@ -1683,12 +1992,9 @@ dialog::backdrop {
     gap: 5px;
   }
   .zoom-button {
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     min-height: 44px;
     padding: 7px 10px;
-  }
-  .zoom-button svg {
-    display: none;
   }
   .art-dialog .dialog-close {
     min-width: 62px;
@@ -1705,9 +2011,6 @@ dialog::backdrop {
     grid-template-columns: 1fr;
     padding: 10px 14px;
     gap: 5px;
-  }
-  .art-controls > div:first-child p {
-    font-size: 0.8125rem;
   }
   .art-source {
     font-size: 0.9375rem;
@@ -1734,8 +2037,7 @@ dialog::backdrop {
   .large-text .art-pair-caption {
     flex-wrap: wrap;
   }
-  .large-text .gallery-stage button,
-  .large-text .gallery-stage img {
+  .large-text .gallery-stage button {
     height: 390px;
   }
   .large-text .artist-choice {
@@ -1756,9 +2058,7 @@ dialog::backdrop {
   }
   .large-text .viewer-tools {
     margin-left: auto;
-  }
-  .large-text .art-controls > div:first-child {
-    display: none;
+    gap: 8px;
   }
 }
 @media (max-width: 360px) {
@@ -1778,11 +2078,7 @@ dialog::backdrop {
     font-size: 0.9375rem;
     gap: 6px;
   }
-  .reading-tools p {
-    font-size: 0.75rem;
-  }
   .text-size {
-    font-size: 0.8125rem;
     padding: 5px 8px;
   }
   .hero h1 {
@@ -1803,8 +2099,7 @@ dialog::backdrop {
   .gallery-stage {
     padding: 20px;
   }
-  .gallery-stage button,
-  .gallery-stage img {
+  .gallery-stage button {
     height: 380px;
   }
   .gallery-picker {
@@ -1892,8 +2187,7 @@ dialog::backdrop {
   .site-footer {
     padding-bottom: 20px;
   }
-  .gallery-stage button,
-  .gallery-stage img {
+  .gallery-stage button {
     height: 380px;
   }
   .gallery-room {
@@ -1936,10 +2230,6 @@ section,
 .news-title {
   flex-wrap: wrap;
 }
-.news-list .meta {
-  flex-wrap: wrap;
-  gap: 4px 14px;
-}
 .footer-legal > * {
   max-width: 100%;
 }
@@ -1949,9 +2239,6 @@ section,
   }
 }
 @media (max-width: 600px) {
-  .large-text .art-controls > div:first-child {
-    display: block;
-  }
   .large-text .art-control-buttons {
     flex-wrap: wrap;
     gap: 8px;
@@ -1960,13 +2247,6 @@ section,
     order: -1;
     flex-basis: 100%;
   }
-  .large-text .gallery-picker {
-    flex-wrap: wrap;
-  }
-  .large-text .artist-choice {
-    min-width: 5em;
-    flex-basis: 5em;
-  }
 }
 /* Override the UA dialog max-width, which shrinks usable space as rem grows. */
 dialog {
@@ -1974,4 +2254,34 @@ dialog {
 }
 .dialog-close span {
   white-space: nowrap;
+}
+/* With large text the five menu groups stop fitting sooner; switch to the menu button. */
+@media (max-width: 1400px) {
+  .large-text .desktop-nav {
+    display: none;
+  }
+  .large-text .header-action {
+    margin-left: auto;
+  }
+  .large-text .menu-open {
+    display: flex;
+  }
+}
+@media (max-width: 600px) {
+  .page-hero {
+    padding-block: 28px 20px;
+  }
+  .subnav ul {
+    gap: 0 20px;
+  }
+  .not-found-actions {
+    padding-bottom: 66px;
+  }
+}
+@media print {
+  .subnav,
+  .pagination,
+  .search {
+    display: none !important;
+  }
 }

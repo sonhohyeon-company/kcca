@@ -1,13 +1,14 @@
 {
-  "name": "kcca-nextjs",
+  "name": "kcca",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test tests/*.test.jsx",
-    "format": "prettier --write app components lib tests *.ts *.json README.md"
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.*",
+    "import:imweb": "node --no-warnings scripts/import-imweb.ts",
+    "format": "prettier --write app components lib scripts tests *.ts *.json README.md"
   },
   "engines": {
     "node": ">=24.0.0"
@@ -15,7 +16,8 @@
   "dependencies": {
     "next": "16.3.5",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "sharp": "0.35.4"
   },
   "devDependencies": {
     "@types/node": "26.5.1",

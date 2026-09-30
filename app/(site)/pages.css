@@ -1,0 +1,621 @@
+/* Static information pages (협회소개, 인사말, 조직도, 오시는길, 자격증 안내, 이용약관, 개인정보처리방침).
+   Design 1: lines and washes, square corners, serif headings, rem-sized text. */
+
+/* keep-all can leave one long word (e.g. "(사)한국청목캘리그라피예술협회(이하") wider than 360px. */
+.page-body,
+.band,
+.cert-intro {
+  overflow-wrap: break-word;
+}
+.page-body {
+  padding-bottom: 88px;
+}
+.page-section {
+  padding-block: 64px;
+}
+.page-body > .page-section:first-child {
+  padding-top: 48px;
+}
+.page-section h2,
+.split > h2,
+.cert-intro h2,
+.cta-row h2 {
+  font-size: clamp(1.6rem, 2.4vw, 2.05rem);
+  line-height: 1.5;
+}
+.band {
+  background: var(--wash);
+  border-block: 1px solid var(--line);
+}
+
+/* Label on the left, content on the right; rows separated by hairlines. */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.6fr);
+  gap: 20px 48px;
+  padding-block: 44px;
+  border-top: 1px solid var(--line);
+}
+.split:first-child {
+  border-top: 0;
+}
+
+.dash-list li {
+  position: relative;
+  padding-left: 1.1em;
+}
+.dash-list li + li {
+  margin-top: 8px;
+}
+/* A text dash follows the font's own metrics, so it stays centred on the first line. */
+.dash-list li::before {
+  content: "–";
+  content: "–" / "";
+  position: absolute;
+  left: 0;
+  color: var(--muted);
+}
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+/* Plain labels: a wash fill and no border, so they don't read as the bordered .subnav.chips links. */
+.tag-list li {
+  padding: 4px 12px;
+  background: var(--wash);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.note {
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+/* Numbered rows (비전 실천 목표) and ruled item grids (핵심 가치, 교육 안내). */
+.num-list li {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  gap: 16px;
+  padding-block: 22px;
+  border-bottom: 1px solid var(--line);
+}
+.num-list li:first-child {
+  padding-top: 0;
+}
+.num {
+  font: 600 1.65rem/1.3 var(--serif);
+  color: var(--accent);
+}
+.num-list h3,
+.fact-list h3 {
+  margin-bottom: 6px;
+}
+.num-list p,
+.fact-list p,
+.course-list p {
+  color: var(--muted);
+  font-size: 1.0625rem;
+  line-height: 1.85;
+}
+.fact-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 32px;
+  margin-top: 36px;
+}
+.fact-list li {
+  border-top: 1px solid var(--ink);
+  padding-top: 18px;
+}
+.fact-list.values {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+}
+.fact-list.values h3 {
+  font: 600 1.6rem/1.5 var(--serif);
+}
+
+/* 협회소개 */
+.about-intro {
+  text-align: center;
+}
+.about-art img {
+  width: 100%;
+  mix-blend-mode: multiply;
+}
+.slogan-name {
+  margin-top: 32px;
+  font-weight: 600;
+  color: var(--accent);
+}
+.slogan {
+  max-width: 52rem;
+  margin: 10px auto 0;
+  font: 600 clamp(1.4rem, 2.4vw, 2rem) / 1.7 var(--serif);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.logo-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+  gap: 28px 40px;
+  align-items: center;
+}
+.logo-plate {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  background: var(--white);
+  border: 1px solid var(--line);
+}
+.logo-symbol {
+  margin-bottom: 10px;
+  font: 600 1.75rem/1.5 var(--serif);
+  letter-spacing: 0.12em;
+}
+
+/* 인사말 */
+.greeting {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 8fr);
+  gap: 40px 72px;
+  align-items: start;
+}
+.greeting-portrait img {
+  width: 100%;
+}
+.greeting-portrait figcaption {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ink);
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.greeting-portrait strong {
+  color: var(--ink);
+  font: 600 1.25rem/1.6 var(--serif);
+}
+.greeting-text h2 {
+  padding-left: 20px;
+  border-left: 3px solid var(--accent);
+  font-size: clamp(1.45rem, 2.2vw, 1.9rem);
+  line-height: 1.6;
+}
+.greeting-text > p {
+  margin-top: 20px;
+  line-height: 1.95;
+}
+.greeting-text .greeting-lead {
+  margin-top: 32px;
+  font-weight: 600;
+}
+.greeting-closing {
+  font: 600 1.25rem/1.8 var(--serif);
+}
+.career-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  gap: 40px 48px;
+  margin-top: 36px;
+}
+.career-grid > div {
+  border-top: 1px solid var(--ink);
+  padding-top: 16px;
+}
+.career-grid h3 {
+  margin-bottom: 12px;
+}
+.career-grid .dash-list {
+  font-size: 1.0625rem;
+}
+
+/* 조직도 placeholder and page photos */
+.notice-box {
+  padding: 28px;
+  background: var(--wash);
+  border-top: 2px solid var(--ink);
+}
+.notice-title {
+  margin-bottom: 8px;
+  font: 600 1.375rem/1.6 var(--serif);
+}
+.notice-box a,
+.cta-row p a {
+  font-weight: 600;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+.page-photo {
+  margin-top: 40px;
+}
+.page-photo img {
+  width: 100%;
+}
+.page-photo figcaption {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+/* 오시는길 */
+.map-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 36px 56px;
+  align-items: start;
+}
+.map-photo img {
+  width: 100%;
+}
+.map-figure {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
+.map-figure > a {
+  display: block;
+  border: 1px solid var(--line);
+}
+.map-figure figcaption a {
+  text-decoration: underline;
+}
+.address-main {
+  margin-top: 12px;
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.6;
+}
+.contact-list {
+  margin: 20px 0 0;
+  border-top: 1px solid var(--ink);
+}
+.contact-list > div {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  min-height: 52px;
+  border-bottom: 1px solid var(--line);
+}
+.contact-list dt {
+  color: var(--muted);
+  font-size: 1rem;
+}
+.contact-list dd {
+  margin: 0;
+}
+.contact-list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+.map-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: 10px;
+  margin-top: 28px;
+}
+.map-links .btn {
+  width: 100%;
+  justify-content: space-between;
+}
+.map-links .hint {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+.route-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 32px 40px;
+}
+.route-grid > div {
+  border-top: 1px solid var(--ink);
+  padding-top: 16px;
+}
+.route-grid p {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 1.0625rem;
+}
+.route-grid strong,
+.route-grid .route-main {
+  color: var(--ink);
+}
+.route-grid .route-main {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.route-chip {
+  display: inline-flex;
+  padding: 0 8px;
+  margin-right: 4px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.9375rem;
+}
+.route-grid .tag-list {
+  margin-top: 12px;
+}
+
+/* 자격증 안내: 급수 (staircase), 취득 과정, closing band */
+.stairs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 40px;
+  border-bottom: 1px solid var(--ink);
+}
+.stairs > li {
+  padding: 20px 20px 28px;
+  border-top: 2px solid var(--ink);
+  border-left: 1px solid var(--line);
+}
+.stairs > li:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+.stairs > li:last-child {
+  background: var(--wash);
+  border-top-color: var(--accent);
+}
+.stairs-step {
+  color: var(--accent);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+.stairs h3 {
+  margin-top: 6px;
+  font-size: 1.125rem;
+}
+.stairs h3 strong {
+  display: block;
+  font: 600 1.75rem/1.4 var(--serif);
+}
+.stairs > li > p:last-child {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 1rem;
+}
+.stairs .tag-list {
+  margin-top: 12px;
+}
+@media (min-width: 851px) {
+  .stairs > li:nth-child(1) {
+    margin-top: 7.5rem;
+  }
+  .stairs > li:nth-child(2) {
+    margin-top: 5rem;
+  }
+  .stairs > li:nth-child(3) {
+    margin-top: 2.5rem;
+  }
+}
+.course-list {
+  margin-top: 36px;
+  border-top: 1px solid var(--ink);
+}
+.course-list li {
+  border-bottom: 1px solid var(--line);
+}
+.course-list a {
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr) auto;
+  gap: 8px 24px;
+  align-items: center;
+  padding-block: 22px;
+}
+.course-no {
+  font: 600 1.65rem/1.4 var(--serif);
+  color: var(--accent);
+}
+.course-list h3 {
+  font-size: 1.1875rem;
+}
+.course-list p {
+  margin-top: 4px;
+}
+.course-list a:hover h3 {
+  color: var(--accent);
+}
+.course-list a:hover .arrow {
+  transform: translateX(4px);
+}
+.course-list .is-top {
+  margin-top: 16px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+}
+.course-list .is-top a {
+  padding-inline: 20px;
+}
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px 48px;
+  padding-block: 48px;
+}
+.cta-row > div:first-child {
+  flex: 1 1 22rem;
+  min-width: 0;
+}
+.cta-row p {
+  max-width: 38rem;
+  margin-top: 8px;
+  color: var(--muted);
+}
+.cta-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.cta-links .btn {
+  flex: 1 1 auto;
+}
+
+/* 자격증 상세 */
+.cert-intro {
+  padding-block: 56px;
+  border-bottom: 1px solid var(--line);
+}
+.cert-intro-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 40px 64px;
+  align-items: center;
+}
+.cert-step {
+  display: inline-flex;
+  padding: 4px 12px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+.cert-intro h2 {
+  margin-top: 18px;
+}
+.cert-lead {
+  margin-top: 16px;
+  color: var(--muted);
+  line-height: 1.85;
+}
+.cert-qual {
+  display: grid;
+  gap: 2px;
+  margin: 28px 0 0;
+  padding-block: 16px;
+  border-block: 1px solid var(--ink);
+}
+.cert-qual dt {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+.cert-qual dd {
+  margin: 0;
+  font-size: 1.1875rem;
+  font-weight: 600;
+}
+.sheet {
+  background: var(--white);
+  border: 1px solid var(--line);
+}
+.sheet img {
+  width: 100%;
+}
+.cert-period {
+  font: 600 1.75rem/1.5 var(--serif);
+}
+.pair-list {
+  margin: 0;
+}
+.pair-list > div {
+  display: grid;
+  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+  gap: 4px 24px;
+  padding-block: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.pair-list > div:first-child {
+  padding-top: 0;
+}
+.pair-list dt {
+  font-weight: 600;
+}
+.pair-list dd {
+  margin: 0;
+}
+.exam-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 28px 40px;
+}
+.exam-grid > div {
+  border-top: 1px solid var(--ink);
+  padding-top: 16px;
+}
+.exam-grid h3 {
+  margin-bottom: 10px;
+}
+
+/* 이용약관 · 개인정보처리방침 */
+.updated {
+  padding-top: 28px;
+}
+.updated + .prose {
+  padding-top: 24px;
+}
+
+@media (max-width: 850px) {
+  .split,
+  .greeting,
+  .map-top,
+  .cert-intro-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .split {
+    gap: 16px;
+  }
+  .greeting-portrait {
+    width: min(100%, 24rem);
+  }
+  .stairs {
+    grid-template-columns: minmax(0, 1fr);
+    border-bottom: 0;
+  }
+  .stairs > li,
+  .stairs > li:first-child {
+    padding: 18px 0 22px;
+    border-left: 0;
+  }
+  .stairs > li:last-child {
+    padding-inline: 16px;
+  }
+}
+@media (max-width: 600px) {
+  .page-body {
+    padding-bottom: 56px;
+  }
+  .page-section {
+    padding-block: 44px;
+  }
+  .page-body > .page-section:first-child {
+    padding-top: 32px;
+  }
+  .split {
+    padding-block: 32px;
+  }
+  .cert-intro {
+    padding-block: 36px;
+  }
+  .logo-intro,
+  .pair-list > div,
+  .contact-list > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .contact-list > div {
+    gap: 0;
+    padding-block: 8px;
+  }
+  .course-list a {
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: 8px 12px;
+  }
+  .course-list .arrow {
+    display: none;
+  }
+  .notice-box {
+    padding: 22px 18px;
+  }
+  /* The pin sits 38% across the strip; crop around it instead of shrinking the whole strip. */
+  .map-figure img {
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: 38% 50%;
+  }
+}

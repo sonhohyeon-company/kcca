@@ -31,8 +31,8 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Check types
-        run: npm run typecheck
+      - name: Run tests
+        run: npm test
 
       - name: Build production application
         run: npm run build

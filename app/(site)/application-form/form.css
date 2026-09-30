@@ -1,0 +1,117 @@
+/* 시험 접수 신청서. Field layout, hints and errors come from globals.css (.field, .check, .form-actions). */
+.apply {
+  padding-block: 36px 96px;
+}
+.apply-guide {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 40px;
+  padding: 20px 24px 20px 44px;
+  list-style: disc;
+  background: var(--wash);
+}
+/* Keep phone numbers on one line ("031-878-" / "0503" on phones). */
+.apply a[href^="tel:"] {
+  white-space: nowrap;
+}
+.apply-guide a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.apply-form {
+  display: grid;
+  gap: 30px;
+}
+/* Inputs need a visible edge (3:1) and 48px+ height for older eyes and hands. */
+.apply-form :is(input:not([type="checkbox"]), textarea) {
+  width: 100%;
+  min-height: 56px;
+  padding: 12px 14px;
+  font: inherit;
+  color: inherit;
+  background: var(--white);
+  border: 1px solid var(--muted);
+  border-radius: 0;
+}
+.apply-form input[type="file"] {
+  padding: 10px;
+}
+.apply-form textarea {
+  min-height: 14rem;
+  resize: vertical;
+  line-height: 1.7;
+}
+.apply-form [aria-invalid="true"] {
+  border: 2px solid var(--accent);
+}
+.apply-consent {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.apply-consent legend {
+  padding: 0;
+  margin-bottom: 8px;
+}
+.apply-terms {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 18px 22px;
+  background: var(--wash);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.apply-terms div {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 12px;
+}
+.apply-terms dt {
+  font-weight: 600;
+}
+.apply-terms dd {
+  margin: 0;
+}
+.apply-consent .hint a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.apply-consent .check {
+  font-weight: 600;
+}
+.apply-summary,
+.apply-done {
+  padding: 20px 24px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+}
+.apply-summary ul {
+  margin: 10px 0 0;
+  padding-left: 22px;
+  list-style: disc;
+}
+.apply-summary a,
+.apply-done a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.apply-done {
+  display: grid;
+  gap: 8px;
+}
+@media (max-width: 600px) {
+  .apply-terms div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .apply-form .form-actions .btn {
+    width: 100%;
+  }
+}

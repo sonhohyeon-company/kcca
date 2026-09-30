@@ -1,0 +1,448 @@
+/* Admin area. Form controls, .field, .check, .flash, .btn.small/.danger,
+   .subnav, .pagination and .search come from globals.css. */
+
+.admin-bar {
+  background: var(--ink);
+  color: var(--paper);
+}
+.admin-bar .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 24px;
+  min-height: 60px;
+}
+.admin-brand {
+  font-size: 1rem;
+  font-weight: 700;
+}
+.admin-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 22px;
+}
+.admin-nav a {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  font-size: 1rem;
+  border-bottom: 2px solid transparent;
+}
+.admin-nav a:hover {
+  border-color: var(--line);
+}
+.admin-nav a[aria-current] {
+  border-color: var(--accent);
+  font-weight: 600;
+}
+.admin-logout {
+  min-height: 44px;
+  padding: 6px 16px;
+  background: transparent;
+  color: var(--paper);
+  border: 1px solid #ffffff66;
+  font-size: 1rem;
+}
+.admin-logout:hover {
+  border-color: var(--paper);
+}
+.admin-bar :focus-visible {
+  outline-color: var(--paper);
+  outline-offset: 2px;
+}
+
+.admin-main {
+  padding-block: 40px 80px;
+}
+.admin-main:focus {
+  outline: none;
+}
+.admin-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  padding-bottom: 18px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--ink);
+}
+.admin-head h1,
+.admin-error h1,
+.login h1 {
+  font-size: 2rem;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+.admin-main h2 {
+  font: 600 1.25rem/1.6 var(--sans);
+  letter-spacing: 0;
+  margin-bottom: 12px;
+}
+.admin-main .subnav {
+  margin-bottom: 8px;
+}
+.flash.error {
+  color: var(--accent);
+  font-weight: 600;
+}
+.admin-main :is(.flash, .error) a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+/* Lists and tables */
+.admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px 24px;
+  margin: 24px 0 12px;
+}
+.table-scroll {
+  overflow-x: auto;
+  position: relative; /* keeps .sr-only cell text inside the scroll box (390px overflow) */
+}
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  border-top: 2px solid var(--ink);
+}
+.admin-table th,
+.admin-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: middle;
+}
+.admin-table th {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+/* Short columns keep their words on one line (body breaks anywhere); the table scrolls instead. */
+.admin-table th,
+.admin-table td:not(:first-child) {
+  white-space: nowrap;
+}
+.admin-table td.num,
+.admin-table td time {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.admin-table tbody tr:hover {
+  background: var(--wash);
+}
+.admin-table td a:not(.btn) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.admin-table td:last-child a:not(.btn) {
+  min-width: 48px;
+  justify-content: center;
+}
+.row-title {
+  font-weight: 600;
+  min-width: 12rem;
+}
+a.row-title:hover,
+.admin-table td a:hover {
+  color: var(--accent);
+}
+.admin-empty {
+  padding: 48px 0;
+  text-align: center;
+  color: var(--muted);
+  border-block: 1px solid var(--line);
+}
+
+/* Forms */
+.form-grid {
+  display: grid;
+  gap: 26px;
+  max-width: 52rem;
+}
+.admin-main fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 18px 20px 22px;
+  border: 1px solid var(--line);
+  display: grid;
+  gap: 14px;
+}
+.admin-main legend {
+  padding-inline: 6px;
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+.field .check input,
+.cover-options input {
+  width: 22px;
+  height: 22px;
+  min-height: 0;
+  padding: 0;
+  flex: none;
+}
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip-row .btn[aria-pressed="true"] {
+  background: var(--wash);
+  border-color: var(--ink);
+}
+/* <details> delete confirmation (applications): the summary is a button. */
+summary.btn {
+  list-style: none;
+  cursor: pointer;
+}
+summary.btn::-webkit-details-marker {
+  display: none;
+}
+details > summary.btn + form {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  margin-top: 16px;
+}
+.danger-zone {
+  max-width: 52rem;
+  margin-top: 56px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+/* Body editor */
+.editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.editor-toolbar button {
+  min-height: 48px;
+  padding: 8px 16px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  font-size: 1rem;
+  font-weight: 600;
+}
+.editor-toolbar button:hover:not(:disabled),
+.editor-toolbar button[aria-pressed="true"] {
+  background: var(--wash);
+  border-color: var(--ink);
+}
+.editor textarea {
+  min-height: 26rem;
+  resize: vertical;
+}
+.editor-preview {
+  min-height: 26rem;
+  padding: 0 24px;
+  background: var(--white);
+  border: 1px solid var(--line);
+}
+.editor-preview > .hint {
+  padding-block: 24px;
+}
+.syntax-details summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.syntax-help {
+  display: grid;
+  grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+  gap: 10px 20px;
+  margin: 12px 0 0;
+  font-size: 1rem;
+}
+.syntax-help dt {
+  font-weight: 600;
+}
+.syntax-help dd {
+  margin: 0;
+  color: var(--muted);
+}
+.syntax-help code {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 0.9375rem;
+  background: var(--wash);
+  padding: 2px 6px;
+  overflow-wrap: anywhere;
+}
+
+/* Cover picker and attachments */
+.cover-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr));
+  gap: 12px;
+}
+.cover-options li {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+.cover-options label {
+  cursor: pointer;
+}
+.cover-options label span {
+  flex: 1;
+  min-width: 0;
+}
+.cover-options img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  background: var(--wash);
+}
+.cover-options input[type="file"] {
+  width: 100%;
+  height: auto;
+  min-height: 52px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  font-size: 0.9375rem;
+}
+.attachment-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 16px;
+  padding-block: 4px;
+  border-bottom: 1px solid var(--line);
+}
+.attachment-list a {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+
+/* Settings */
+.popup-current {
+  display: grid;
+  gap: 8px;
+}
+.popup-preview {
+  width: auto;
+  max-height: 16rem;
+  border: 1px solid var(--line);
+  background: var(--white);
+}
+
+/* Login */
+.login {
+  display: grid;
+  gap: 18px;
+  width: min(100%, 26rem);
+  margin: 10vh auto;
+  padding: 36px;
+  background: var(--white);
+  border: 1px solid var(--line);
+}
+.login .btn {
+  width: 100%;
+}
+.login .flash {
+  margin: 0;
+}
+
+/* Dashboard */
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+  gap: 40px 56px;
+  align-items: start;
+}
+.dash-grid > *,
+.dash-side > * {
+  min-width: 0;
+}
+.dash-side {
+  display: grid;
+  gap: 40px;
+}
+.dash-list li {
+  padding-block: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.dash-list li:first-child {
+  border-top: 2px solid var(--ink);
+}
+.dash-list .row-title {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+}
+.dash-links li + li {
+  margin-top: 2px;
+}
+.help-box {
+  margin-top: 56px;
+  padding: 24px 28px;
+  background: var(--wash);
+  border: 1px solid var(--line);
+}
+.help-box > p {
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+.admin-error {
+  display: grid;
+  gap: 16px;
+  justify-items: start;
+  max-width: 40rem;
+  margin: 8vh auto;
+}
+
+@media (max-width: 600px) {
+  .admin-main {
+    padding-block: 24px 64px;
+  }
+  .admin-head h1,
+  .admin-error h1,
+  .login h1 {
+    font-size: 1.625rem;
+  }
+  .admin-nav ul {
+    gap: 0 16px;
+  }
+  /* Short board names: the dashboard table's 새 글 buttons then fit at 390px. */
+  .dash-grid .row-title {
+    min-width: 0;
+  }
+  .admin-main fieldset {
+    padding: 14px 14px 18px;
+  }
+  .editor-preview {
+    padding: 0 16px;
+  }
+  .syntax-help {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+  .syntax-help dd {
+    margin-bottom: 10px;
+  }
+  .login {
+    margin: 24px auto;
+    padding: 24px 20px;
+  }
+  .help-box {
+    padding: 20px 16px;
+  }
+}

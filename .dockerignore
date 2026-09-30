@@ -1,5 +1,10 @@
 node_modules
 .next
-out
+data
 .git
+.github
 .env*
+*.tsbuildinfo
+deploy
+Dockerfile
+.dockerignore

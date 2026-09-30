@@ -1,13 +1,36 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, type MouseEvent } from "react";
-import { Icon } from "./icon";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, type SyntheticEvent } from "react";
+import { findMenu, menu, type MenuItem } from "@/lib/boards";
 import { closeOnBackdrop } from "@/lib/dialog";
+import { site } from "@/lib/site";
+import { Icon } from "./icon";
 
 export function SiteHeader() {
+  const pathname = usePathname() ?? "";
   const headerRef = useRef<HTMLElement>(null);
+  const navRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLDialogElement>(null);
+  const found = findMenu(pathname);
+  const current = (item: MenuItem) =>
+    item === found?.item
+      ? pathname === item.href
+        ? "page"
+        : "true"
+      : undefined;
+
+  function closeGroups(except?: Element) {
+    navRef.current?.querySelectorAll("details[open]").forEach((group) => {
+      if (group !== except) (group as HTMLDetailsElement).open = false;
+    });
+  }
+
+  function closeMenu() {
+    menuRef.current?.close();
+  }
 
   useEffect(() => {
     const header = headerRef.current;
@@ -23,48 +46,100 @@ export function SiteHeader() {
     return () => observer.disconnect();
   }, []);
 
-  function handleNavigation(event: MouseEvent<HTMLAnchorElement>) {
-    menuRef.current?.close();
-    const href = event.currentTarget.getAttribute("href");
-    if (href?.startsWith("#")) {
-      const target = document.getElementById(href.slice(1));
-      // Native anchor scrolling remains intact; move keyboard focus to the section.
-      requestAnimationFrame(() => target?.focus({ preventScroll: true }));
+  // A new page closes the dropdowns and the mobile menu.
+  useEffect(() => {
+    closeGroups();
+    closeMenu();
+  }, [pathname]);
+
+  // Escape or a click outside the desktop menu closes an open dropdown.
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      const open = navRef.current?.querySelector("details[open]");
+      if (event.key !== "Escape" || !open) return;
+      closeGroups();
+      open.querySelector("summary")?.focus();
     }
+    function onClick(event: MouseEvent) {
+      if (!navRef.current?.contains(event.target as Node)) closeGroups();
+    }
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("click", onClick);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("click", onClick);
+    };
+  }, []);
+
+  // `name="gnb"` keeps one dropdown open in current browsers; this covers older ones.
+  function handleToggle(event: SyntheticEvent<HTMLDetailsElement>) {
+    if (event.currentTarget.open) closeGroups(event.currentTarget);
   }
 
   return (
     <>
       <header ref={headerRef} className="site-header">
         <div className="wrap header-inner">
-          <a
+          <Link
             className="brand"
-            href="#main"
+            href="/"
             aria-label="한국청목캘리그라피예술협회 홈"
           >
-            <Image src="/assets/logo.png" width="102" height="90" alt="KCCA" />
+            <Image
+              src="/assets/logo.png"
+              width="102"
+              height="90"
+              alt="KCCA"
+              loading="eager"
+            />
             <span className="brand-name">
               <span>한국청목</span>
               <span>캘리그라피예술협회</span>
             </span>
-          </a>
-          <nav className="desktop-nav" aria-label="주요 메뉴">
-            <a href="#competition">공모전</a>
-            <a href="#gallery">수상작 갤러리</a>
-            <a href="#education">교육·자격검정</a>
-            <a href="#news">협회소식</a>
-            <a
-              href="https://kcca-society.kr/about-history"
-              target="_blank"
-              rel="noopener"
-            >
-              협회소개<span className="sr-only"> (새 창)</span>
-            </a>
+          </Link>
+          <nav
+            ref={navRef}
+            className="desktop-nav"
+            aria-label="주요 메뉴"
+            onClick={(event) => {
+              // Also close when the link points at the page already shown.
+              if ((event.target as Element).closest("a")) closeGroups();
+            }}
+            onBlur={(event) => {
+              // Tabbing out closes the dropdown. A null target (a click on the
+              // page) is left to the document click listener.
+              const next = event.relatedTarget;
+              if (next && !event.currentTarget.contains(next)) closeGroups();
+            }}
+          >
+            {menu.map((group) => (
+              <details
+                key={group.title}
+                className="nav-group"
+                name="gnb"
+                onToggle={handleToggle}
+              >
+                <summary
+                  aria-current={group === found?.group ? "true" : undefined}
+                >
+                  {group.title}
+                </summary>
+                <ul className="submenu">
+                  {group.items.map((item) => (
+                    <li key={item.href}>
+                      <Link href={item.href} aria-current={current(item)}>
+                        {item.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ))}
           </nav>
-          <a className="btn header-action" href="#competition">
+          <Link className="btn header-action" href="/notice-contest">
             공모전 안내
             <Icon name="arrow-right" />
-          </a>
+          </Link>
           <button
             className="menu-open"
             id="menu-open"
@@ -94,7 +169,7 @@ export function SiteHeader() {
           <button
             className="dialog-close"
             type="button"
-            onClick={() => menuRef.current?.close()}
+            onClick={closeMenu}
             aria-label="전체 메뉴 닫기"
           >
             <span>닫기</span>
@@ -102,44 +177,24 @@ export function SiteHeader() {
           </button>
         </div>
         <nav className="menu-links" aria-label="모바일 주요 메뉴">
-          <a onClick={handleNavigation} href="#competition">
-            공모전 안내
-            <Icon name="arrow-right" />
-          </a>
-          <a onClick={handleNavigation} href="#gallery">
-            수상작 갤러리
-            <Icon name="arrow-right" />
-          </a>
-          <a onClick={handleNavigation} href="#education">
-            교육·자격검정
-            <Icon name="arrow-right" />
-          </a>
-          <a onClick={handleNavigation} href="#news">
-            협회소식·활동
-            <Icon name="arrow-right" />
-          </a>
-          <a
-            onClick={handleNavigation}
-            href="https://kcca-society.kr/about-history"
-            target="_blank"
-            rel="noopener"
-          >
-            협회소개
-            <Icon name="arrow-up-right" />
-            <span className="sr-only"> (새 창)</span>
-          </a>
-          <a
-            onClick={handleNavigation}
-            href="https://kcca-society.kr/54"
-            target="_blank"
-            rel="noopener"
-          >
-            청목 스토어
-            <Icon name="arrow-up-right" />
-            <span className="sr-only"> (새 창)</span>
-          </a>
-          <a onClick={handleNavigation} className="btn" href="tel:0318780503">
-            협회에 문의하기 · 031-878-0503
+          {menu.map((group) => (
+            <div key={group.title} className="menu-group">
+              <h3>{group.title}</h3>
+              {group.items.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={closeMenu}
+                  aria-current={current(item)}
+                >
+                  {item.title}
+                  <Icon name="arrow-right" />
+                </Link>
+              ))}
+            </div>
+          ))}
+          <a onClick={closeMenu} className="btn" href={site.tel}>
+            협회에 문의하기 · {site.phone}
           </a>
         </nav>
       </dialog>
