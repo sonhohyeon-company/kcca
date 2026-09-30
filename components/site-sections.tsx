@@ -343,11 +343,12 @@ export function Footer() {
             href="#main"
             aria-label="한국청목캘리그라피예술협회 맨 위로"
           >
-            <Image src="/assets/logo.png" width="102" height="90" alt="KCCA" />
-            <span className="brand-name">
-              <span>한국청목</span>
-              <span>캘리그라피예술협회</span>
-            </span>
+            <Image
+              src="/assets/logo-kcca.png"
+              width="275"
+              height="44"
+              alt="한국청목캘리그라피예술협회"
+            />
           </a>
           <div className="footer-contact">
             <a className="phone" href={site.tel}>

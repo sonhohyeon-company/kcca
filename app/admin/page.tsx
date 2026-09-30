@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/auth";
 import { boards, getBoard } from "@/lib/boards";
 import { retentionCutoff } from "@/app/(site)/application-form/validate";
 import {
+  countMembers,
   countPostsByBoard,
   editablePages,
   listApplications,
@@ -19,12 +20,13 @@ export const metadata: Metadata = { title: "대시보드" };
 export default async function AdminDashboard() {
   await requireAdmin();
   await removeStored(purgeApplications(retentionCutoff()), "private");
-  const [counts, { posts }, applications] = await Promise.all([
+  const [counts, { posts }, applications, members] = await Promise.all([
     countPostsByBoard(),
     // listPosts puts pinned posts first; take a wider slice and re-sort by date.
     // ponytail: wrong only if more than 42 posts are pinned.
     listPosts({ perPage: 50 }),
     listApplications(),
+    countMembers(),
   ]);
   const recent = posts
     .toSorted((a, b) => b.createdAt.localeCompare(a.createdAt))
@@ -117,6 +119,16 @@ export default async function AdminDashboard() {
             </p>
             <Link className="text-link" href="/admin/applications">
               신청서 보기
+            </Link>
+          </section>
+
+          <section aria-labelledby="dash-members">
+            <h2 id="dash-members">회원</h2>
+            <p>
+              가입한 회원 <strong>{members}</strong>명
+            </p>
+            <Link className="text-link" href="/admin/members">
+              회원 목록 보기
             </Link>
           </section>
 

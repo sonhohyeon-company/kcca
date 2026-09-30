@@ -9,6 +9,7 @@ const links = [
   { href: "/admin/pages/about-organization", label: "페이지" },
   { href: "/admin/settings", label: "사이트 설정" },
   { href: "/admin/applications", label: "시험 접수 신청서" },
+  { href: "/admin/members", label: "회원" },
 ];
 
 // "/admin/posts/12" → "/admin/posts": a link is current anywhere in its section.

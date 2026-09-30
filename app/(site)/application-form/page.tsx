@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/page-hero";
+import { currentMember } from "@/lib/members";
+import { enabledProviders } from "@/lib/oauth";
+import { formatPhone } from "@/lib/profile";
 import { site } from "@/lib/site";
 import { MAX_UPLOAD_BYTES, contentTypes } from "@/lib/uploads";
 import { ApplicationForm } from "./application-form";
@@ -18,7 +21,8 @@ const accept = Object.keys(contentTypes)
   .map((ext) => `.${ext}`)
   .join(",");
 
-export default function ApplicationFormPage() {
+export default async function ApplicationFormPage() {
+  const member = await currentMember();
   return (
     <>
       <PageHero
@@ -35,12 +39,28 @@ export default function ApplicationFormPage() {
           <li>
             이름과 연락처는 꼭 적어 주세요. 나머지는 적지 않으셔도 됩니다.
           </li>
+          {!member && enabledProviders().length > 0 && (
+            <li>
+              <Link href="/login?next=%2Fapplication-form">로그인</Link>하시면
+              이름, 연락처, 이메일이 자동으로 채워집니다.
+            </li>
+          )}
           <li>
             인터넷으로 보내기 어려우시면 협회로 전화해 주세요.{" "}
             <a href={site.tel}>{site.phone}</a>
           </li>
         </ul>
-        <ApplicationForm accept={accept} maxBytes={MAX_UPLOAD_BYTES} />
+        <ApplicationForm
+          accept={accept}
+          maxBytes={MAX_UPLOAD_BYTES}
+          defaults={
+            member && {
+              name: member.name,
+              phone: formatPhone(member.phone),
+              email: member.email,
+            }
+          }
+        />
       </div>
     </>
   );

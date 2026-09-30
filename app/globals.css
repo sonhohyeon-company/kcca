@@ -230,24 +230,13 @@ svg[aria-hidden="true"] {
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
   min-height: 52px;
   flex: none;
 }
 .brand img {
-  width: 48px;
-  height: 44px;
-  object-fit: contain;
-  mix-blend-mode: multiply;
-}
-.brand-name {
-  font-size: 0.875rem;
-  line-height: 1.6;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-.brand-name span {
-  display: block;
+  width: auto;
+  height: 40px;
+  mix-blend-mode: multiply; /* the logo's white paper takes the page colour */
 }
 .desktop-nav {
   display: flex;
@@ -329,6 +318,33 @@ svg[aria-hidden="true"] {
   min-height: 48px;
   padding: 0 2px;
   font-size: 1rem;
+}
+.header-account {
+  display: flex;
+  align-items: center;
+  flex: none;
+  min-height: 48px;
+  padding: 0 2px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+/* Below 1300px the wide logo, five menu groups, the contest button and 로그인 no longer fit on
+   one line: switch to the menu button there (the 1050px block below repeats this for older CSS). */
+@media (max-width: 1400px) {
+  .header-inner {
+    gap: 20px;
+  }
+}
+@media (max-width: 1300px) {
+  .desktop-nav {
+    display: none;
+  }
+  .header-action {
+    margin-left: auto; /* next to the menu button */
+  }
+  .menu-open {
+    display: flex;
+  }
 }
 .reading-tools {
   display: flex;
@@ -947,6 +963,9 @@ dialog::backdrop {
   color: var(--accent);
   font-weight: 600;
 }
+.menu-account {
+  font-weight: 600;
+}
 .menu-links .btn {
   justify-content: center;
   margin-top: 24px;
@@ -1490,9 +1509,6 @@ fieldset.field {
   :root {
     --header: 74px;
   }
-  .brand-name {
-    font-size: 0.875rem;
-  }
   .hero {
     gap: 24px;
     min-height: 530px;
@@ -1637,18 +1653,14 @@ fieldset.field {
   .header-inner {
     gap: 12px;
   }
-  .brand {
-    gap: 9px;
-  }
   .brand img {
-    width: 44px;
-    height: 42px;
-  }
-  .brand-name {
-    font-size: 0.8125rem;
+    height: 34px;
   }
   .header-action {
     display: none; /* the mobile bar carries it */
+  }
+  .header-account {
+    display: none; /* the menu dialog carries it */
   }
   .menu-open {
     font-size: 1rem;
@@ -2065,14 +2077,8 @@ fieldset.field {
   :root {
     --gutter: 19px;
   }
-  .brand-name {
-    font-size: 0.75rem;
-  }
   .brand img {
-    width: 37px;
-  }
-  .brand {
-    gap: 7px;
+    height: 30px;
   }
   .menu-open {
     font-size: 0.9375rem;
@@ -2116,14 +2122,11 @@ fieldset.field {
     font-size: 1rem;
     gap: 10px;
   }
-  .large-text .brand-name {
-    font-size: 0.6875rem;
-  }
   .large-text .menu-open {
     font-size: 0.8125rem;
   }
   .large-text .brand img {
-    width: 33px;
+    height: 28px;
   }
   .large-text .header-inner {
     gap: 8px;
@@ -2212,14 +2215,10 @@ section,
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
 }
 .brand {
-  min-width: 0;
-  flex-shrink: 1;
+  flex-shrink: 0;
 }
 .brand img {
   flex: none;
-}
-.brand-name {
-  min-width: 0;
 }
 .menu-open {
   flex: none;
@@ -2255,17 +2254,15 @@ dialog {
 .dialog-close span {
   white-space: nowrap;
 }
-/* With large text the five menu groups stop fitting sooner; switch to the menu button. */
-@media (max-width: 1400px) {
-  .large-text .desktop-nav {
-    display: none;
-  }
-  .large-text .header-action {
-    margin-left: auto;
-  }
-  .large-text .menu-open {
-    display: flex;
-  }
+/* With large text the five menu groups no longer fit next to the logo at any width: use the menu button. */
+.large-text .desktop-nav {
+  display: none;
+}
+.large-text .header-action {
+  margin-left: auto;
+}
+.large-text .menu-open {
+  display: flex;
 }
 @media (max-width: 600px) {
   .page-hero {

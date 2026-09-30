@@ -6,7 +6,11 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
   await connection(); // read ALLOW_INDEXING at request time, not at build
   return indexingAllowed()
     ? {
-        rules: { userAgent: "*", allow: "/" },
+        rules: {
+          userAgent: "*",
+          allow: "/",
+          disallow: ["/auth/", "/login", "/signup", "/mypage"],
+        },
         sitemap: `${siteUrl().replace(/\/+$/, "")}/sitemap.xml`,
       }
     : {

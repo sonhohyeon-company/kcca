@@ -14,3 +14,8 @@ export const site = {
 // Read at request time (callers are dynamic), so one image serves preview and production.
 export const siteUrl = () => process.env.SITE_URL ?? "http://localhost:3000";
 export const indexingAllowed = () => process.env.ALLOW_INDEXING === "true";
+/** Google Analytics 4 measurement id, or "" when unset or malformed (then nothing is loaded). */
+export const gaId = () =>
+  /^G-[A-Z0-9]{4,20}$/.test(process.env.GA_MEASUREMENT_ID ?? "")
+    ? process.env.GA_MEASUREMENT_ID!
+    : "";

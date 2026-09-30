@@ -1,0 +1,155 @@
+/* 로그인, 가입 정보 확인, 마이페이지. Fields come from globals.css (.field, .check, .form-actions). */
+.member {
+  display: grid;
+  gap: 44px;
+  padding-block: 36px 96px;
+}
+.member-section {
+  display: grid;
+  gap: 18px;
+}
+.member-section h2 {
+  font-size: 1.375rem;
+}
+.member-note,
+.member-summary {
+  padding: 18px 22px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+}
+.member-summary ul {
+  margin: 10px 0 0;
+  padding-left: 22px;
+  list-style: disc;
+}
+.member-note a,
+.member-summary a,
+.member-consent .hint a,
+.member-guide a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+/* Provider buttons in their official colours; big enough for older hands. */
+.login-buttons {
+  display: grid;
+  gap: 14px;
+  max-width: 26rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 58px;
+  padding: 12px 20px;
+  border: 1px solid transparent;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.login-btn svg {
+  width: 24px;
+  height: 24px;
+  flex: none;
+}
+.login-btn.kakao {
+  background: #fee500;
+  color: rgba(0, 0, 0, 0.85);
+}
+/* Naver's white button style: its green on white text fails the 4.5:1 contrast rule. */
+.login-btn.naver {
+  background: #fff;
+  color: #1f1f1f;
+  border-color: #03c75a;
+}
+.login-btn.naver svg {
+  color: #03c75a;
+}
+.login-btn.google {
+  background: #fff;
+  color: #1f1f1f;
+  border-color: #747775;
+}
+.login-btn:hover {
+  filter: brightness(0.95);
+}
+.member-guide {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 20px 24px 20px 44px;
+  list-style: disc;
+  background: var(--wash);
+}
+.member-form {
+  display: grid;
+  gap: 30px;
+}
+.member-form input:not([type="checkbox"]) {
+  width: 100%;
+  min-height: 56px;
+  padding: 12px 14px;
+  font: inherit;
+  color: inherit;
+  background: var(--white);
+  border: 1px solid var(--muted);
+  border-radius: 0;
+}
+.member-form [aria-invalid="true"] {
+  border: 2px solid var(--accent);
+}
+.member-consent {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.member-consent legend {
+  padding: 0;
+  margin-bottom: 8px;
+}
+.member-terms {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 18px 22px;
+  background: var(--wash);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.member-terms div {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 12px;
+}
+.member-terms dt {
+  font-weight: 600;
+}
+.member-terms dd {
+  margin: 0;
+}
+.member-consent .check {
+  font-weight: 600;
+}
+/* Two-step withdrawal, like the admin's delete buttons: open, then press the second button. */
+.member-withdraw form {
+  display: grid;
+  gap: 16px;
+  padding-top: 16px;
+}
+@media (max-width: 600px) {
+  .member-terms div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .member .form-actions .btn,
+  .login-buttons {
+    width: 100%;
+    max-width: none;
+  }
+}

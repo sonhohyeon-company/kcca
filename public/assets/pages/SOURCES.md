@@ -17,7 +17,7 @@ all metadata removed (the two phone photos carried GPS). No other edits.
 | certificate-5.webp | 1200×900 | /certificate-guide-5 | https://cdn.imweb.me/thumbnail/20260805/a9425bf6ba7f1.png |
 | certificate-6.webp | 1200×900 | /certificate-guide-6 | https://cdn.imweb.me/thumbnail/20260818/66e219616653c.png |
 
-The association logo on /about-history reuses `/assets/logo.png` (byte-identical to the imweb logo).
+The association logo on /about-history is `/assets/logo-mark.png` (see ../SOURCES.md).
 
 `map.webp` (1240×520, /about-map) is not from imweb: it was stitched once from OpenStreetMap standard
 tiles (zoom 16) with a pin and label added at the 경민대학교 campus point (37.74548, 127.02385; OSM has

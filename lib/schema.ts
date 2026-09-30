@@ -42,6 +42,17 @@ export function openDb(
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS members (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      provider TEXT NOT NULL,               -- kakao | naver | google (lib/profile.ts)
+      provider_id TEXT NOT NULL,            -- the member's id at that provider
+      email TEXT NOT NULL,
+      name TEXT NOT NULL,
+      phone TEXT NOT NULL,                  -- digits only, e.g. 01012345678
+      created_at TEXT NOT NULL,
+      last_login_at TEXT NOT NULL,
+      UNIQUE (provider, provider_id)
+    );
     CREATE TABLE IF NOT EXISTS applications (
       id INTEGER PRIMARY KEY,
       name TEXT NOT NULL,

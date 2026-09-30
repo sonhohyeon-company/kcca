@@ -1,11 +1,14 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { connection } from "next/server";
 import type { ReactNode } from "react";
 import { ReadingTools } from "@/components/reading-tools";
 import { SiteHeader } from "@/components/site-header";
 import { Footer, MobileBar } from "@/components/site-sections";
 import { fontVariables } from "@/lib/fonts";
-import { indexingAllowed, site, siteUrl } from "@/lib/site";
+import { currentMember } from "@/lib/members";
+import { enabledProviders } from "@/lib/oauth";
+import { gaId, indexingAllowed, site, siteUrl } from "@/lib/site";
 import "../globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -48,7 +51,13 @@ export const viewport: Viewport = {
 // Applies the saved large-text preference before first paint (ReadingTools keeps it in sync).
 const largeTextScript = `try{if(localStorage.getItem("kcca-large-text")==="true")document.documentElement.classList.add("large-text")}catch(e){}`;
 
-export default function SiteLayout({ children }: { children: ReactNode }) {
+export default async function SiteLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const member = await currentMember();
+  const ga = gaId();
   return (
     <html
       lang="ko"
@@ -63,13 +72,28 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
         <a className="skip" href="#main">
           본문 바로가기
         </a>
-        <SiteHeader />
+        <SiteHeader
+          member={member && { name: member.name }}
+          login={enabledProviders().length > 0}
+        />
         <main id="main" tabIndex={-1}>
           <ReadingTools />
           {children}
         </main>
         <Footer />
         <MobileBar />
+        {ga && (
+          // Google Analytics 4; page views on in-site navigation come from its enhanced measurement.
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${ga}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga" strategy="afterInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${ga}');`}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   );

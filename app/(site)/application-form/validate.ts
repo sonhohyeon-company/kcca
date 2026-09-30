@@ -29,7 +29,7 @@ export const retentionCutoff = (now = Date.now()) =>
   new Date(now - 365 * 24 * 60 * 60 * 1000).toISOString();
 
 // The browser's type="email" rule (WHATWG), plus a dot in the domain.
-const email =
+export const emailPattern =
   /^[\w.!#$%&'*+/=?^`{|}~-]+@[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?(?:\.[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?)+$/i;
 
 const text = (formData: FormData, key: string) => {
@@ -66,7 +66,10 @@ export function validateApplication(
   )
     errors.phone = "연락처를 숫자로 정확히 입력해 주세요. 예: 010-1234-5678";
 
-  if (values.email && (values.email.length > 254 || !email.test(values.email)))
+  if (
+    values.email &&
+    (values.email.length > 254 || !emailPattern.test(values.email))
+  )
     errors.email = "이메일 주소를 확인해 주세요. 예: name@example.com";
 
   if (values.message.length > MESSAGE_MAX)

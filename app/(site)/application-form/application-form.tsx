@@ -11,6 +11,7 @@ import {
   readApplication,
   type ApplicationErrors,
   type ApplicationState,
+  type ApplicationValues,
 } from "./validate";
 
 type Key = keyof ApplicationErrors;
@@ -25,13 +26,15 @@ function SubmitButton() {
   );
 }
 
-/** `accept` and `maxBytes` come from lib/uploads (server-only) via the page. */
+/** `accept` and `maxBytes` come from lib/uploads (server-only) via the page; `defaults` from the member. */
 export function ApplicationForm({
   accept,
   maxBytes,
+  defaults,
 }: {
   accept: string;
   maxBytes: number;
+  defaults: Pick<ApplicationValues, "name" | "phone" | "email"> | null;
 }) {
   const [state, formAction] = useActionState(
     async (
@@ -79,7 +82,7 @@ export function ApplicationForm({
     ...(fileError ? { file: fileError } : {}),
   };
   const listed = order.filter((key) => errors[key]);
-  const values = state.values;
+  const values: Partial<ApplicationValues> | null = state.values ?? defaults;
   const a11y = (key: Key, hint = false) => ({
     id: `apply-${key}`,
     "aria-invalid": errors[key] ? true : undefined,

@@ -9,7 +9,15 @@ import { closeOnBackdrop } from "@/lib/dialog";
 import { site } from "@/lib/site";
 import { Icon } from "./icon";
 
-export function SiteHeader() {
+export function SiteHeader({
+  member,
+  login,
+}: {
+  /** The logged-in member (from the server layout), or null. */
+  member: { name: string } | null;
+  /** False until at least one login provider is configured: then no 로그인 link is shown. */
+  login: boolean;
+}) {
   const pathname = usePathname() ?? "";
   const headerRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLElement>(null);
@@ -71,6 +79,13 @@ export function SiteHeader() {
     };
   }, []);
 
+  // Where 로그인 leads: back to this page afterwards, except from home and the login page itself.
+  const account = member
+    ? "/mypage"
+    : pathname === "/" || pathname.startsWith("/login")
+      ? "/login"
+      : `/login?next=${encodeURIComponent(pathname)}`;
+
   // `name="gnb"` keeps one dropdown open in current browsers; this covers older ones.
   function handleToggle(event: SyntheticEvent<HTMLDetailsElement>) {
     if (event.currentTarget.open) closeGroups(event.currentTarget);
@@ -86,16 +101,12 @@ export function SiteHeader() {
             aria-label="한국청목캘리그라피예술협회 홈"
           >
             <Image
-              src="/assets/logo.png"
-              width="102"
-              height="90"
-              alt="KCCA"
+              src="/assets/logo-kcca.png"
+              width="275"
+              height="44"
+              alt="한국청목캘리그라피예술협회"
               loading="eager"
             />
-            <span className="brand-name">
-              <span>한국청목</span>
-              <span>캘리그라피예술협회</span>
-            </span>
           </Link>
           <nav
             ref={navRef}
@@ -140,6 +151,11 @@ export function SiteHeader() {
             공모전 안내
             <Icon name="arrow-right" />
           </Link>
+          {(member || login) && (
+            <Link className="header-account" href={account}>
+              {member ? "마이페이지" : "로그인"}
+            </Link>
+          )}
           <button
             className="menu-open"
             id="menu-open"
@@ -177,6 +193,12 @@ export function SiteHeader() {
           </button>
         </div>
         <nav className="menu-links" aria-label="모바일 주요 메뉴">
+          {(member || login) && (
+            <Link className="menu-account" href={account} onClick={closeMenu}>
+              {member ? `${member.name} 님 · 마이페이지` : "로그인 · 회원가입"}
+              <Icon name="arrow-right" />
+            </Link>
+          )}
           {menu.map((group) => (
             <div key={group.title} className="menu-group">
               <h3>{group.title}</h3>

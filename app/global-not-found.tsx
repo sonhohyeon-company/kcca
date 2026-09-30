@@ -21,16 +21,12 @@ export default function GlobalNotFound() {
           <div className="wrap header-inner">
             <Link className="brand" href="/" aria-label={`${site.name} 홈`}>
               <Image
-                src="/assets/logo.png"
-                width="102"
-                height="90"
-                alt="KCCA"
+                src="/assets/logo-kcca.png"
+                width="275"
+                height="44"
+                alt="한국청목캘리그라피예술협회"
                 loading="eager"
               />
-              <span className="brand-name">
-                <span>한국청목</span>
-                <span>캘리그라피예술협회</span>
-              </span>
             </Link>
           </div>
         </header>

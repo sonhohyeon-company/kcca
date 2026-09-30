@@ -105,7 +105,12 @@ export default function Page() {
           <h2 id="logo-title">협회 로고 소개</h2>
           <div className="logo-intro">
             <div className="logo-plate">
-              <Image src="/assets/logo.png" alt="한국청목캘리그라피예술협회 로고" width={102} height={90} />
+              <Image
+                src="/assets/logo-mark.png"
+                alt="한국청목캘리그라피예술협회 로고"
+                width={157}
+                height={60}
+              />
             </div>
             <div>
               <p className="logo-symbol">청목(靑木)</p>

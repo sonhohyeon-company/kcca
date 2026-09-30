@@ -2,6 +2,7 @@ import "server-only";
 import { randomBytes } from "node:crypto";
 import type { DatabaseSync } from "node:sqlite";
 import { connection } from "next/server";
+import type { Provider } from "./profile";
 import { openDb } from "./schema";
 
 // Opened lazily: `next build` imports route modules where DATA_DIR may not exist.
@@ -352,30 +353,147 @@ export function saveSettings(values: Partial<Settings>) {
   }
 }
 
-/** Random per-install secret for signing admin sessions (kept out of the defaults above). */
-export function sessionSecret() {
-  const row = getDb()
-    .prepare("SELECT value FROM settings WHERE key = 'session_secret'")
-    .get() as Row | undefined;
-  if (row) return String(row.value);
-  const secret = randomBytes(32).toString("hex");
-  getDb()
-    .prepare(
-      "INSERT OR IGNORE INTO settings (key, value) VALUES ('session_secret', ?)",
-    )
-    .run(secret);
-  return String(
-    (
-      getDb()
-        .prepare("SELECT value FROM settings WHERE key = 'session_secret'")
-        .get() as Row
-    ).value,
-  );
+/** Random per-install secret stored under `key` in settings (kept out of the defaults above). */
+function installSecret(key: string) {
+  const read = () =>
+    getDb().prepare("SELECT value FROM settings WHERE key = ?").get(key) as
+      Row | undefined;
+  if (!read())
+    getDb()
+      .prepare("INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)")
+      .run(key, randomBytes(32).toString("hex"));
+  return String(read()!.value);
 }
+
+/** Signs admin sessions. */
+export const sessionSecret = () => installSecret("session_secret");
+/** Signs member sessions and login cookies; separate so an admin logout keeps members logged in. */
+export const memberSecret = () => installSecret("member_secret");
 
 /** Drops the secret; the next sessionSecret() call makes a new one, which invalidates every session. */
 export function resetSessionSecret() {
   getDb().prepare("DELETE FROM settings WHERE key = 'session_secret'").run();
+}
+
+// Deleted rows are zeroed (secure_delete in lib/schema.ts); this also empties the WAL copy.
+const flushDeleted = () => getDb().exec("PRAGMA wal_checkpoint(TRUNCATE)");
+
+// Members: people who logged in with Kakao, Naver or Google (/login, lib/oauth.ts).
+
+export type Member = {
+  id: number;
+  provider: Provider;
+  providerId: string;
+  email: string;
+  name: string;
+  /** Digits only (lib/profile.ts normalizePhone). */
+  phone: string;
+  createdAt: string;
+  lastLoginAt: string;
+};
+
+function toMember(row: Row): Member {
+  return {
+    id: Number(row.id),
+    provider: String(row.provider) as Provider,
+    providerId: String(row.provider_id),
+    email: String(row.email),
+    name: String(row.name),
+    phone: String(row.phone),
+    createdAt: String(row.created_at),
+    lastLoginAt: String(row.last_login_at),
+  };
+}
+
+export async function getMember(id: number) {
+  await connection();
+  const row = getDb().prepare("SELECT * FROM members WHERE id = ?").get(id) as
+    Row | undefined;
+  return row ? toMember(row) : null;
+}
+
+export async function findMember(provider: Provider, providerId: string) {
+  await connection();
+  const row = getDb()
+    .prepare("SELECT * FROM members WHERE provider = ? AND provider_id = ?")
+    .get(provider, providerId) as Row | undefined;
+  return row ? toMember(row) : null;
+}
+
+export function createMember(
+  input: Pick<Member, "provider" | "providerId" | "email" | "name" | "phone">,
+) {
+  const now = new Date().toISOString();
+  const result = getDb()
+    .prepare(
+      `INSERT INTO members (provider, provider_id, email, name, phone, created_at, last_login_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    )
+    .run(
+      input.provider,
+      input.providerId,
+      input.email,
+      input.name,
+      input.phone,
+      now,
+      now,
+    );
+  return Number(result.lastInsertRowid);
+}
+
+export function updateMember(
+  id: number,
+  values: Pick<Member, "email" | "name" | "phone">,
+) {
+  getDb()
+    .prepare("UPDATE members SET email = ?, name = ?, phone = ? WHERE id = ?")
+    .run(values.email, values.name, values.phone, id);
+}
+
+export function touchMemberLogin(id: number) {
+  getDb()
+    .prepare("UPDATE members SET last_login_at = ? WHERE id = ?")
+    .run(new Date().toISOString(), id);
+}
+
+export function deleteMember(id: number) {
+  getDb().prepare("DELETE FROM members WHERE id = ?").run(id);
+  flushDeleted();
+}
+
+/** Newest first; `q` matches name, phone digits or email. */
+export async function listMembers({
+  q = "",
+  page = 1,
+  perPage = 30,
+}: {
+  q?: string;
+  page?: number;
+  perPage?: number;
+}) {
+  await connection();
+  const like = likeParam(q.trim());
+  const where =
+    "WHERE (? = '' OR name LIKE ? ESCAPE '\\' OR phone LIKE ? ESCAPE '\\' OR email LIKE ? ESCAPE '\\')";
+  const params = [q.trim(), like, like, like];
+  const total = Number(
+    (
+      getDb()
+        .prepare(`SELECT COUNT(*) AS n FROM members ${where}`)
+        .get(...params) as Row
+    ).n,
+  );
+  const rows = getDb()
+    .prepare(`SELECT * FROM members ${where} ORDER BY id DESC LIMIT ? OFFSET ?`)
+    .all(...params, perPage, (Math.max(1, page) - 1) * perPage) as Row[];
+  return { members: rows.map(toMember), total };
+}
+
+export async function countMembers() {
+  await connection();
+  return Number(
+    (getDb().prepare("SELECT COUNT(*) AS n FROM members").get() as Row).n,
+  );
 }
 
 // Applications: 시험 접수 신청서 submitted from /application-form.
@@ -438,9 +556,6 @@ export async function getApplication(id: number) {
     .get(id) as Row | undefined;
   return row ? toApplication(row) : null;
 }
-
-// Deleted rows are zeroed (secure_delete in lib/schema.ts); this also empties the WAL copy.
-const flushDeleted = () => getDb().exec("PRAGMA wal_checkpoint(TRUNCATE)");
 
 export function deleteApplication(id: number) {
   getDb().prepare("DELETE FROM applications WHERE id = ?").run(id);
