@@ -1,4 +1,4 @@
-FROM node:24-alpine AS build
+FROM node:26-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 # Linux(musl)용 sharp 바이너리를 여기서 설치합니다.
@@ -8,7 +8,7 @@ COPY . .
 RUN npm run build
 
 # Next.js standalone 서버 (컨테이너 포트 8080). DB와 업로드는 /data 볼륨에 둡니다.
-FROM node:24-alpine
+FROM node:26-alpine
 WORKDIR /app
 ENV NODE_ENV=production HOSTNAME=0.0.0.0 PORT=8080 DATA_DIR=/data
 # 앱 코드는 root 소유(읽기 전용). node가 쓰는 곳만 아래 RUN에서 넘깁니다.
