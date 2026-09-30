@@ -235,7 +235,7 @@ svg[aria-hidden="true"] {
 }
 .brand img {
   width: auto;
-  height: 40px;
+  height: 44px;
   mix-blend-mode: multiply; /* the logo's white paper takes the page colour */
 }
 .desktop-nav {
@@ -304,12 +304,6 @@ svg[aria-hidden="true"] {
   background: var(--wash);
   color: var(--accent);
 }
-.header-action {
-  font-size: 1rem;
-  min-height: 48px;
-  padding: 11px 19px;
-  gap: 18px;
-}
 .menu-open {
   display: none;
   background: none;
@@ -327,24 +321,6 @@ svg[aria-hidden="true"] {
   padding: 0 2px;
   font-size: 1rem;
   font-weight: 600;
-}
-/* Below 1300px the wide logo, five menu groups, the contest button and 로그인 no longer fit on
-   one line: switch to the menu button there (the 1050px block below repeats this for older CSS). */
-@media (max-width: 1400px) {
-  .header-inner {
-    gap: 20px;
-  }
-}
-@media (max-width: 1300px) {
-  .desktop-nav {
-    display: none;
-  }
-  .header-action {
-    margin-left: auto; /* next to the menu button */
-  }
-  .menu-open {
-    display: flex;
-  }
 }
 .reading-tools {
   display: flex;
@@ -1414,9 +1390,6 @@ fieldset.field {
     font-size: 0.9375rem;
     gap: 19px;
   }
-  .header-action {
-    padding-inline: 15px;
-  }
   .hero {
     gap: 30px;
   }
@@ -1454,7 +1427,7 @@ fieldset.field {
   .desktop-nav {
     display: none;
   }
-  .header-action {
+  .header-account {
     margin-left: auto; /* next to the menu button */
   }
   .menu-open {
@@ -1655,9 +1628,6 @@ fieldset.field {
   }
   .brand img {
     height: 34px;
-  }
-  .header-action {
-    display: none; /* the mobile bar carries it */
   }
   .header-account {
     display: none; /* the menu dialog carries it */
@@ -2254,15 +2224,17 @@ dialog {
 .dialog-close span {
   white-space: nowrap;
 }
-/* With large text the five menu groups no longer fit next to the logo at any width: use the menu button. */
-.large-text .desktop-nav {
-  display: none;
-}
-.large-text .header-action {
-  margin-left: auto;
-}
-.large-text .menu-open {
-  display: flex;
+/* With large text the five menu groups stop fitting sooner; switch to the menu button. */
+@media (max-width: 1400px) {
+  .large-text .desktop-nav {
+    display: none;
+  }
+  .large-text .header-account {
+    margin-left: auto;
+  }
+  .large-text .menu-open {
+    display: flex;
+  }
 }
 @media (max-width: 600px) {
   .page-hero {

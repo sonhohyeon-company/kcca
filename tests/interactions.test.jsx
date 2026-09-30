@@ -237,11 +237,36 @@ test("an empty gallery renders nothing and needs no viewer", async () => {
   }
 });
 
-const header = (pathname) => (
+const header = (pathname, props = {}) => (
   <PathnameContext.Provider value={pathname}>
-    <SiteHeader />
+    <SiteHeader member={null} login={false} {...props} />
   </PathnameContext.Provider>
 );
+
+test("header offers 로그인 only once a provider is configured, and 마이페이지 to members", async () => {
+  const view = await mount(header("/notice-association"));
+  const link = () => view.container.querySelector(".header-account");
+  const menu = () => view.container.querySelector(".menu-account");
+  try {
+    assert.equal(link(), null);
+    assert.equal(menu(), null);
+    await view.rerender(header("/notice-association", { login: true }));
+    assert.equal(link().textContent, "로그인");
+    assert.equal(
+      link().getAttribute("href"),
+      "/login?next=%2Fnotice-association",
+    );
+    assert.match(menu().textContent, /로그인 · 회원가입/);
+    await view.rerender(header("/", { login: true }));
+    assert.equal(link().getAttribute("href"), "/login");
+    await view.rerender(header("/", { member: { name: "홍길동" } }));
+    assert.equal(link().textContent, "마이페이지");
+    assert.equal(link().getAttribute("href"), "/mypage");
+    assert.match(menu().textContent, /홍길동 님/);
+  } finally {
+    await view.dispose();
+  }
+});
 
 test("header marks the current section and the grouped menu closes on navigation", async () => {
   const view = await mount(header("/association"));
@@ -339,7 +364,7 @@ test("desktop dropdowns close on Escape, outside clicks, focus leaving and route
     assert.equal(groups[3].open, true);
     await leave(groups[3].querySelector("a"));
     assert.equal(groups[3].open, true);
-    await leave(view.container.querySelector(".header-action"));
+    await leave(view.container.querySelector(".menu-open"));
     assert.equal(groups[3].open, false);
   } finally {
     await view.dispose();

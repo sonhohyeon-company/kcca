@@ -147,10 +147,6 @@ export function SiteHeader({
               </details>
             ))}
           </nav>
-          <Link className="btn header-action" href="/notice-contest">
-            공모전 안내
-            <Icon name="arrow-right" />
-          </Link>
           {(member || login) && (
             <Link className="header-account" href={account}>
               {member ? "마이페이지" : "로그인"}
