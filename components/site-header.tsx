@@ -192,25 +192,44 @@ export function SiteHeader({
           {(member || login) && (
             <Link className="menu-account" href={account} onClick={closeMenu}>
               {member ? `${member.name} 님 · 마이페이지` : "로그인 · 회원가입"}
-              <Icon name="arrow-right" />
             </Link>
           )}
-          {menu.map((group) => (
-            <div key={group.title} className="menu-group">
-              <h3>{group.title}</h3>
-              {group.items.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={closeMenu}
-                  aria-current={current(item)}
-                >
-                  {item.title}
-                  <Icon name="arrow-right" />
-                </Link>
-              ))}
-            </div>
-          ))}
+          {menu.map((group) => {
+            // A page named like its group (협회소개 → 협회소개) is the heading itself, not a repeat.
+            const home = group.items.find((item) => item.title === group.title);
+            return (
+              <div key={group.title} className="menu-group">
+                <h3>
+                  {home ? (
+                    <Link
+                      href={home.href}
+                      onClick={closeMenu}
+                      aria-current={current(home)}
+                    >
+                      {group.title}
+                    </Link>
+                  ) : (
+                    group.title
+                  )}
+                </h3>
+                <ul>
+                  {group.items
+                    .filter((item) => item !== home)
+                    .map((item) => (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          onClick={closeMenu}
+                          aria-current={current(item)}
+                        >
+                          {item.title}
+                        </Link>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            );
+          })}
           <a onClick={closeMenu} className="btn" href={site.tel}>
             협회에 문의하기 · {site.phone}
           </a>

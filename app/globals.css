@@ -903,9 +903,17 @@ dialog::backdrop {
   min-height: 48px;
   font-size: 1rem;
 }
+/* The menu is a full-screen sheet: no floating card, no gap above it. */
 .menu-dialog {
-  width: min(470px, calc(100% - 28px));
-  margin: 14px 14px auto auto;
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+}
+.menu-dialog[open] {
+  display: flex;
+  flex-direction: column;
 }
 /* The grouped menu scrolls inside the dialog; its title bar stays put. */
 .menu-dialog .dialog-header {
@@ -915,21 +923,13 @@ dialog::backdrop {
   background: var(--paper);
 }
 .menu-links {
-  padding: 0 24px 28px;
-}
-.menu-group h3 {
-  padding-top: 18px;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--muted);
+  flex: 1;
+  padding: 6px 24px 32px;
 }
 .menu-links a {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 15px;
-  min-height: 52px;
-  border-bottom: 1px solid var(--line);
+  min-height: 48px;
   font-size: 1.0625rem;
 }
 .menu-links a:hover {
@@ -940,11 +940,41 @@ dialog::backdrop {
   font-weight: 600;
 }
 .menu-account {
+  min-height: 56px;
+  border-bottom: 1px solid var(--line);
   font-weight: 600;
+}
+/* Each group: its own page as the heading (when it has one), the rest in two short columns. */
+.menu-group {
+  padding-top: 22px;
+}
+.menu-group h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+.menu-group h3 a {
+  font-size: inherit;
+  min-height: 44px;
+}
+.menu-group ul {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+  max-width: 34rem; /* tablets: keep the two columns close together */
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.menu-group li a {
+  min-height: 44px;
+  font-size: 1rem;
+}
+.large-text .menu-group ul {
+  grid-template-columns: 1fr;
 }
 .menu-links .btn {
   justify-content: center;
-  margin-top: 24px;
+  margin-top: 32px;
   font-size: 1rem;
   text-align: center;
   white-space: normal;
@@ -1941,10 +1971,6 @@ fieldset.field {
     justify-content: space-between;
     padding: 10px 15px;
     gap: 15px;
-  }
-  .menu-dialog {
-    width: calc(100% - 24px);
-    margin: 12px;
   }
   .dialog-header {
     padding: 11px 16px;

@@ -304,6 +304,15 @@ test("header marks the current section and the grouped menu closes on navigation
       menu.querySelector('a[href="/association"]').getAttribute("aria-current"),
       "page",
     );
+    // A group's own page is its heading, not repeated in the list below it.
+    const listed = [...menu.querySelectorAll(".menu-group li a")].map(
+      (a) => a.textContent,
+    );
+    assert.ok(!listed.includes("협회소개") && !listed.includes("협회활동"));
+    assert.equal(
+      menu.querySelector(".menu-group h3 a[href='/about-history']").textContent,
+      "협회소개",
+    );
     // Tapping a link closes the menu right away.
     await click(menu.querySelector('a[href="/about-history"]'));
     assert.equal(menu.open, false);
